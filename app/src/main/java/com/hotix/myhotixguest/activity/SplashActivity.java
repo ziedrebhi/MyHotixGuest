@@ -1,7 +1,8 @@
-package com.hotix.myhotixguest;
+package com.hotix.myhotixguest.activity;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -9,7 +10,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
-public class SplashActivity extends Activity {
+import com.hotix.myhotixguest.R;
+
+public class SplashActivity extends AppCompatActivity {
     protected Animation fadeIn;
     protected ImageView img1;
 
@@ -29,9 +32,9 @@ public class SplashActivity extends Activity {
                 try {
                     img1.startAnimation(fadeIn);
                     sleep(5000);
-                   /* Intent main = new Intent(SplashActivity.this, LoginActivity.class);
+                    Intent main = new Intent(SplashActivity.this, MainActivity.class);
                     startActivity(main);
-                    finish();*/
+                    finish();
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
