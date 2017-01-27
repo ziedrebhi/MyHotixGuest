@@ -33,7 +33,7 @@ public class SplashScreen extends AppCompatActivity {
                 try {
                     logo.startAnimation(fadeIn);
                     sleep(3000);
-                    Intent main = new Intent(SplashScreen.this, MainActivity.class);
+                    Intent main = new Intent(SplashScreen.this, LoginActivity.class);
                     startActivity(main);
                     finish();
                 } catch (Exception e) {
