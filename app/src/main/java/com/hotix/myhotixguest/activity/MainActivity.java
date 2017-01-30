@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,30 +21,36 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hotix.myhotixguest.R;
-import com.hotix.myhotixguest.fragment.HomeFragment;
-import com.hotix.myhotixguest.fragment.MoviesFragment;
+import com.hotix.myhotixguest.fragment.ActiviteFragment;
+import com.hotix.myhotixguest.fragment.CommandeFragment;
+import com.hotix.myhotixguest.fragment.FactureFragment;
 import com.hotix.myhotixguest.fragment.NotificationsFragment;
-import com.hotix.myhotixguest.fragment.PhotosFragment;
-import com.hotix.myhotixguest.fragment.SettingsFragment;
+import com.hotix.myhotixguest.fragment.ReclamationFragment;
+import com.hotix.myhotixguest.fragment.ReservationFragment;
+import com.hotix.myhotixguest.fragment.RestaurantsFragment;
 import com.hotix.myhotixguest.other.CircleTransform;
 
 public class MainActivity extends AppCompatActivity {
     // urls to load navigation header background image
     // and profile image
     private static final String urlNavHeaderBg = "http://api.androidhive.info/images/nav-menu-header-bg.jpg";
-    private static final String urlProfileImg = "https://lh3.googleusercontent.com/eCtE_G34M9ygdkmOpYvCag1vBARCmZwnVS6rS5t4JLzJ6QgQSBquM0nuTsCpLhYbKljoyS-txg";
+    private static final String urlProfileImg = "http://www.jacqueslacoupe.com/images/sample-user.png";
     // tags used to attach the fragments
-    private static final String TAG_HOME = "home";
-    private static final String TAG_PHOTOS = "photos";
-    private static final String TAG_MOVIES = "movies";
+    private static final String TAG_FACTURE = "facture";
+    private static final String TAG_RECLAM = "reclamations";
+    private static final String TAG_MOVIES = "activite";
     private static final String TAG_NOTIFICATIONS = "notifications";
-    private static final String TAG_SETTINGS = "settings";
+    private static final String TAG_SETTINGS = "restaurants";
+    private static final String TAG_RESA = "reservation";
+    private static final String TAG_COMMANDE = "commande";
     // index to identify current nav menu item
     public static int navItemIndex = 0;
-    public static String CURRENT_TAG = TAG_HOME;
+    public static String CURRENT_TAG = TAG_FACTURE;
     private NavigationView navigationView;
     private DrawerLayout drawer;
     private View navHeader;
@@ -85,8 +92,30 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+               /* Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();*/
+                final View view2 = view;
+                new MaterialDialog.Builder(MainActivity.this)
+                        .title(R.string.input)
+                        .content(R.string.input_content)
+                        .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE)
+                        .input(R.string.input_hint, R.string.input_prefill, new MaterialDialog.InputCallback() {
+                            @Override
+                            public void onInput(MaterialDialog dialog, CharSequence input) {
+                                // Do something
+                                Snackbar.make(view2, "Replace with your own action", Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null).show();
+
+                                MaterialDialog.Builder msgConnecting = new MaterialDialog.Builder(MainActivity.this);
+                                msgConnecting.content("Loading. Please wait...")
+                                        .progress(true, 0)
+                                        .cancelable(true)
+                                        .typeface("Roboto-Light.ttf", "Roboto.ttf")
+                                        .theme(Theme.LIGHT)
+                                        .progressIndeterminateStyle(false)
+                                        .show();
+                            }
+                        }).show();
             }
         });
 
@@ -98,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             navItemIndex = 0;
-            CURRENT_TAG = TAG_HOME;
+            CURRENT_TAG = TAG_FACTURE;
             loadHomeFragment();
         }
     }
@@ -110,8 +139,8 @@ public class MainActivity extends AppCompatActivity {
      */
     private void loadNavHeader() {
         // name, website
-        txtName.setText("Ravi Tamada");
-        txtWebsite.setText("www.androidhive.info");
+        txtName.setText("Zied Rebhi");
+        txtWebsite.setText("Chambre : 172");
 
         // loading header background image
         Glide.with(this).load(urlNavHeaderBg)
@@ -187,28 +216,38 @@ public class MainActivity extends AppCompatActivity {
     private Fragment getHomeFragment() {
         switch (navItemIndex) {
             case 0:
-                // home
-                HomeFragment homeFragment = new HomeFragment();
-                return homeFragment;
+                // facture Fragment
+                FactureFragment factureFragment = new FactureFragment();
+                return factureFragment;
             case 1:
-                // photos
-                PhotosFragment photosFragment = new PhotosFragment();
-                return photosFragment;
+                // Reclamation Fragment
+                ReclamationFragment reclamationFragment = new ReclamationFragment();
+                return reclamationFragment;
             case 2:
-                // movies fragment
-                MoviesFragment moviesFragment = new MoviesFragment();
-                return moviesFragment;
+                // Activite Fragment
+                ActiviteFragment activiteFragment = new ActiviteFragment();
+                return activiteFragment;
             case 3:
                 // notifications fragment
                 NotificationsFragment notificationsFragment = new NotificationsFragment();
                 return notificationsFragment;
 
             case 4:
-                // settings fragment
-                SettingsFragment settingsFragment = new SettingsFragment();
+                // Restaurants Fragment
+                RestaurantsFragment settingsFragment = new RestaurantsFragment();
                 return settingsFragment;
+
+            case 5:
+                // Commande Fragment
+                CommandeFragment CommandeFragment = new CommandeFragment();
+                return CommandeFragment;
+
+            case 6:
+                // Reservation Fragment
+                ReservationFragment ReservationFragment = new ReservationFragment();
+                return ReservationFragment;
             default:
-                return new HomeFragment();
+                return new FactureFragment();
         }
     }
 
@@ -231,15 +270,15 @@ public class MainActivity extends AppCompatActivity {
                 //Check to see which item was being clicked and perform appropriate action
                 switch (menuItem.getItemId()) {
                     //Replacing the main content with ContentFragment Which is our Inbox View;
-                    case R.id.nav_home:
+                    case R.id.nav_facture:
                         navItemIndex = 0;
-                        CURRENT_TAG = TAG_HOME;
+                        CURRENT_TAG = TAG_FACTURE;
                         break;
-                    case R.id.nav_photos:
+                    case R.id.nav_reclamations:
                         navItemIndex = 1;
-                        CURRENT_TAG = TAG_PHOTOS;
+                        CURRENT_TAG = TAG_RECLAM;
                         break;
-                    case R.id.nav_movies:
+                    case R.id.nav_activite:
                         navItemIndex = 2;
                         CURRENT_TAG = TAG_MOVIES;
                         break;
@@ -247,9 +286,17 @@ public class MainActivity extends AppCompatActivity {
                         navItemIndex = 3;
                         CURRENT_TAG = TAG_NOTIFICATIONS;
                         break;
-                    case R.id.nav_settings:
+                    case R.id.nav_restaurants:
                         navItemIndex = 4;
                         CURRENT_TAG = TAG_SETTINGS;
+                        break;
+                    case R.id.nav_commande:
+                        navItemIndex = 5;
+                        CURRENT_TAG = TAG_COMMANDE;
+                        break;
+                    case R.id.nav_reservation:
+                        navItemIndex = 6;
+                        CURRENT_TAG = TAG_RESA;
                         break;
                     case R.id.nav_about_us:
                         // launch new intent instead of loading fragment
@@ -316,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
             // rather than home
             if (navItemIndex != 0) {
                 navItemIndex = 0;
-                CURRENT_TAG = TAG_HOME;
+                CURRENT_TAG = TAG_FACTURE;
                 loadHomeFragment();
                 return;
             }
@@ -330,7 +377,7 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
 
         // show menu only when home fragment is selected
-        if (navItemIndex == 0) {
+        if (navItemIndex != 3) {
             getMenuInflater().inflate(R.menu.main, menu);
         }
 
@@ -349,8 +396,9 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_logout) {
+        if ((id == R.id.action_logout) && (id == R.id.action_logout2)) {
             Toast.makeText(getApplicationContext(), "Logout user!", Toast.LENGTH_LONG).show();
+
             return true;
         }
 
@@ -371,7 +419,7 @@ public class MainActivity extends AppCompatActivity {
 
     // show or hide the fab
     private void toggleFab() {
-        if (navItemIndex == 0)
+        if (navItemIndex == 1)
             fab.show();
         else
             fab.hide();

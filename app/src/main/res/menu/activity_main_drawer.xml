@@ -3,17 +3,17 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
-            android:icon="@mipmap/ic_home_black_24dp"
-            android:title="@string/nav_home" />
+            android:id="@+id/nav_facture"
+            android:icon="@mipmap/ic_assignment_black_24dp"
+            android:title="@string/nav_facture" />
         <item
-            android:id="@+id/nav_photos"
-            android:icon="@mipmap/ic_photo_library_black_24dp"
-            android:title="@string/nav_photos" />
+            android:id="@+id/nav_reclamations"
+            android:icon="@mipmap/ic_announcement_black_24dp"
+            android:title="@string/nav_reclamations" />
         <item
-            android:id="@+id/nav_movies"
-            android:icon="@mipmap/ic_local_movies_black_24dp"
-            android:title="@string/nav_movies" />
+            android:id="@+id/nav_activite"
+            android:icon="@mipmap/ic_card_giftcard_black_24dp"
+            android:title="@string/nav_activites" />
 
         <item
             android:id="@+id/nav_notifications"
@@ -21,12 +21,20 @@
             android:title="@string/nav_notifications" />
 
         <item
-            android:id="@+id/nav_settings"
-            android:icon="@mipmap/ic_settings_black_24dp"
-            android:title="@string/nav_settings" />
+            android:id="@+id/nav_restaurants"
+            android:icon="@mipmap/ic_local_dining_black_24dp"
+            android:title="@string/nav_restaurants" />
+        <item
+            android:id="@+id/nav_commande"
+            android:icon="@mipmap/ic_add_shopping_cart_black_24dp"
+            android:title="@string/nav_commander" />
+        <item
+            android:id="@+id/nav_reservation"
+            android:icon="@mipmap/ic_event_black_24dp"
+            android:title="@string/nav_reserver" />
     </group>
 
-    <item android:title="Other">
+    <item android:title="@string/other">
         <menu>
             <item
                 android:id="@+id/nav_about_us"
