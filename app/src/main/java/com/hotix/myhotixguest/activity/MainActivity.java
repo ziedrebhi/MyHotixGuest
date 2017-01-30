@@ -96,8 +96,9 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();*/
                 final View view2 = view;
                 new MaterialDialog.Builder(MainActivity.this)
-                        .title(R.string.input)
                         .content(R.string.input_content)
+                        .typeface("Roboto-Light.ttf", "Roboto.ttf")
+                        .positiveText(R.string.submit)
                         .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE)
                         .input(R.string.input_hint, R.string.input_prefill, new MaterialDialog.InputCallback() {
                             @Override
@@ -112,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
                                         .cancelable(true)
                                         .typeface("Roboto-Light.ttf", "Roboto.ttf")
                                         .theme(Theme.LIGHT)
+
                                         .progressIndeterminateStyle(false)
                                         .show();
                             }

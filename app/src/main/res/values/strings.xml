@@ -26,11 +26,11 @@
         <item>Commander</item>
         <item>Réservation</item>
     </string-array>
-    <string name="input">Input</string>
+    <string name="input">Réclamation</string>
     <string name="input_custominvalidation">Input (Custom Invalidation)</string>
-    <string name="input_hint">John Appleseed</string>
-    <string name="input_content">What\'s your name?</string>
-    <string name="input_prefill">zied rebhi</string>
+    <string name="input_hint">Votre réclamation</string>
+    <string name="input_content">Quelque chose pas bien ?</string>
+    <string name="input_prefill"></string>
     <string name="activity_title_about_us">A propos</string>
     <string name="activity_title_privacy_policy">Privacy Policy</string>
     <string name="action_clear_all">Clear All</string>
@@ -64,4 +64,35 @@
     <string name="other">Autres</string>
     <string name="reclamations">Réclamations</string>
     <string name="pas_reclamation">Pas de Réclamations ! </string>
+    <string name="pas_notif">Pas de Notifications ! </string>
+    <string name="submit">Envoyer</string>
+    <string name="encours">En cours</string>
+
+
+    <string name="selected_time">The time you picked will be shown here.</string>
+    <string name="selected_date">The date you picked will be shown here.</string>
+    <string name="selected_datetime">The date and time you picked will be shown here.</string>
+    <string name="pick_time">Pick Time</string>
+    <string name="pick_date">Pick Date</string>
+    <string name="pick_datetime">Pick Date+Time</string>
+    <string name="mode_24_hours">Use 24 hour mode</string>
+    <string name="mode_dark">Use dark theme</string>
+    <string name="mode_custom_accent">Use custom accent</string>
+    <string name="vibrate">Vibrate on touch</string>
+    <string name="dismiss">Dismiss on pause (eg: orientation change)</string>
+    <string name="title">Show a title</string>
+    <string name="show_version_2">Use marshmallow layout</string>
+    <string name="show_year_first">Show the year picker first</string>
+    <string name="enable_seconds">Show seconds picker</string>
+    <string name="enable_minutes">Show minutes picker</string>
+    <string name="limit_times">Limit selectable times</string>
+    <string name="limit_dates">Limit selectable dates</string>
+    <string name="disable_dates">Disable specific dates</string>
+    <string name="highlight_dates">Highlight certain dates</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="tab_title_time">Time</string>
+    <string name="tab_title_date">Date</string>
+    <string name="tab_title_datetime">Date+Time</string>
+
 </resources>

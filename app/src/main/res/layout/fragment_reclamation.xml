@@ -10,16 +10,22 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <ListView
-            android:id="@android:id/list"
+        <!-- TODO: Update blank fragment layout -->
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:drawSelectorOnTop="false" />
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/my_recycler_viewReclam"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical" />
+
+        </RelativeLayout>
 
 
         <TextView
-            android:id="@android:id/empty"
+            android:id="@+id/emptyMsg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -27,6 +33,7 @@
             android:drawableLeft="@mipmap/ic_happy"
             android:gravity="center"
             android:text="@string/pas_reclamation"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
             android:textColor="@color/colorPrimary" />
     </LinearLayout>
 
