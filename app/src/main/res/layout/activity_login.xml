@@ -14,13 +14,22 @@
         android:alpha="0.5"
         android:background="#000000" />
 
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/relativeLayout"
+        android:layout_centerHorizontal="true"
+        app:srcCompat="@mipmap/logo" />
+
     <RelativeLayout
         android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/textView4"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_centerVertical="true">
+        android:layout_marginBottom="88dp">
 
         <TextView
             android:id="@+id/textView"
@@ -59,7 +68,7 @@
             android:layout_alignStart="@+id/textView3"
             android:layout_below="@+id/espase"
             android:drawableLeft="@android:drawable/ic_lock_idle_charging"
-            android:hint="num_chb"
+            android:hint=" N° Chbr"
             android:inputType="number"
             android:textColor="@color/colorWhite"
             android:textColorHint="@color/colorHint" />
@@ -75,7 +84,7 @@
             android:layout_below="@+id/login"
             android:drawableLeft="@android:drawable/ic_lock_idle_lock"
             android:ems="10"
-            android:hint="num id"
+            android:hint=" N° Iden."
             android:inputType="textPassword"
             android:textColor="@color/colorWhite"
             android:textColorHint="@color/colorHint" />
@@ -115,11 +124,4 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="#FFFFFF" />
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/relativeLayout"
-        android:layout_centerHorizontal="true"
-        app:srcCompat="@mipmap/logo" />
 </RelativeLayout>

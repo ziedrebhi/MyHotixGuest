@@ -7,7 +7,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
+import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
 import com.hotix.myhotixguest.R;
 
 /**
@@ -23,11 +26,10 @@ public class ReservationFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private static final String FRAG_TAG_DATE_PICKER = "fragment_date_picker_name";
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private OnFragmentInteractionListener mListener;
 
     public ReservationFragment() {
@@ -65,7 +67,30 @@ public class ReservationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_reservation, container, false);
+        View view = inflater.inflate(R.layout.fragment_reservation, container, false);
+        Button button = (Button) view.findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            /*    DatePickerBuilder dpb = new DatePickerBuilder()
+                        .setFragmentManager(getChildFragmentManager())
+                        .setStyleResId(R.style.BetterPickersDialogFragment)
+                        .setTargetFragment(ReservationFragment.this);
+                dpb.show();
+*/
+                CalendarDatePickerDialogFragment cdp = new CalendarDatePickerDialogFragment()
+
+                        .setOnDateSetListener(new CalendarDatePickerDialogFragment.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(CalendarDatePickerDialogFragment dialog, int year, int monthOfYear, int dayOfMonth) {
+                                Toast.makeText(getActivity(), "Date: " + year + " " + monthOfYear + 1 + " " + dayOfMonth, Toast.LENGTH_LONG).show();
+                            }
+                        });
+
+                cdp.show(getChildFragmentManager(), FRAG_TAG_DATE_PICKER);
+            }
+        });
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -91,6 +116,7 @@ public class ReservationFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
 
     /**
      * This interface must be implemented by activities that contain this

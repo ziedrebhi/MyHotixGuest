@@ -398,9 +398,11 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if ((id == R.id.action_logout) && (id == R.id.action_logout2)) {
+        if ((id == R.id.action_logout) || (id == R.id.action_logout2)) {
             Toast.makeText(getApplicationContext(), "Logout user!", Toast.LENGTH_LONG).show();
-
+            Intent main = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(main);
+            finish();
             return true;
         }
 

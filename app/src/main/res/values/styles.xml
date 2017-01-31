@@ -17,4 +17,18 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="MyCustomBetterPickersDialogs" parent="BetterPickersRadialTimePickerDialog.PrimaryColor">
+        <item name="bpPreHeaderBackgroundColor">@color/colorPrimary</item>
+        <item name="bpHeaderBackgroundColor">@color/colorPrimary</item>
+        <item name="bpHeaderSelectedTextColor">@android:color/white</item>
+        <item name="bpHeaderUnselectedTextColor">@android:color/white</item>
+
+        <item name="bpBodyBackgroundColor">@color/bpWhite</item>
+        <!--<item name="bpBodySelectedTextColor">@color/colorPrimaryDark</item>-->
+        <item name="bpBodyUnselectedTextColor">@color/colorPrimary</item>
+
+
+        <item name="bpButtonsBackgroundColor">@color/colorPrimaryDark</item>
+        <item name="bpButtonsTextColor">@color/colorWhite</item>
+    </style>
 </resources>
