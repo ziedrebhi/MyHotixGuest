@@ -30,10 +30,6 @@ import org.springframework.web.client.RestTemplate;
  */
 public class LoginActivity extends AppCompatActivity {
 
-    public final String NAMESPACE = "http://tempuri.org/";
-    public final String SOAP_ACTION = "http://tempuri.org/Authentifier";
-    public final String METHOD_NAME = "Authentifier";
-    Boolean connected = false;
     EditText login, password;
     MaterialDialog.Builder msgConnecting;
     MaterialDialog dialog;
@@ -82,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
     public void ShowDialogMaterial(boolean isOk) {
         msgConnecting = new MaterialDialog.Builder(LoginActivity.this);
         if (isOk) {
-            msgConnecting.content("Loading. Please wait...")
+            msgConnecting.content(getResources().getString(R.string.laoding))
                     .progress(true, 0)
                     .cancelable(true)
                     .typeface("Roboto-Light.ttf", "Roboto.ttf")
@@ -91,7 +87,7 @@ public class LoginActivity extends AppCompatActivity {
                     .autoDismiss(false);
             dialog = msgConnecting.build();
         } else {
-            msgConnecting.content("Erreur de Connexion")
+            msgConnecting.content(getResources().getString(R.string.laoding_error))
                     .typeface("Roboto-Light.ttf", "Roboto.ttf")
                     .theme(Theme.LIGHT)
                     .positiveText("Ok");

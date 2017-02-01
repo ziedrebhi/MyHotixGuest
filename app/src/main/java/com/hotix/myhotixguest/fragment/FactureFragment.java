@@ -147,7 +147,7 @@ public class FactureFragment extends Fragment {
     public void ShowDialogMaterial(boolean isOk) {
         msgConnecting = new MaterialDialog.Builder(getActivity());
         if (isOk) {
-            msgConnecting.content("Loading. Please wait...")
+            msgConnecting.content(getResources().getString(R.string.laoding))
                     .progress(true, 0)
                     .cancelable(true)
                     .typeface("Roboto-Light.ttf", "Roboto.ttf")
@@ -156,7 +156,7 @@ public class FactureFragment extends Fragment {
                     .autoDismiss(false);
             dialog = msgConnecting.build();
         } else {
-            msgConnecting.content("Erreur de Connexion")
+            msgConnecting.content(getResources().getString(R.string.laoding_error))
                     .typeface("Roboto-Light.ttf", "Roboto.ttf")
                     .theme(Theme.LIGHT)
                     .positiveText("Ok");

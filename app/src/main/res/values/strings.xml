@@ -6,6 +6,7 @@
     <string name="closeDrawer">close_drawer</string>
 
     <!-- Navigation Drawer menu labels -->
+    <string name="nav_details">Détails</string>
     <string name="nav_facture">Facture</string>
     <string name="nav_reclamations">Réclamations</string>
     <string name="nav_activites">Activités</string>
@@ -18,6 +19,7 @@
 
     <!-- Toolbar titles when navigation menu item is selected -->
     <string-array name="nav_item_activity_titles">
+        <item>Détails</item>
         <item>Facture</item>
         <item>Réclamations</item>
         <item>Activités</item>
@@ -64,10 +66,12 @@
     <string name="other">Autres</string>
     <string name="reclamations">Réclamations</string>
     <string name="pas_reclamation">Pas de Réclamations ! </string>
+    <string name="pas_restau">Pas de Restaurants ! </string>
+    <string name="pas_activ">Pas d\'Activitées ! </string>
     <string name="pas_notif">Pas de Notifications ! </string>
     <string name="submit">Envoyer</string>
     <string name="encours">En cours</string>
-
+    <string name="msg">Message</string>
 
     <string name="selected_time">The time you picked will be shown here.</string>
     <string name="selected_date">The date you picked will be shown here.</string>
@@ -94,5 +98,14 @@
     <string name="tab_title_time">Time</string>
     <string name="tab_title_date">Date</string>
     <string name="tab_title_datetime">Date+Time</string>
-
+    <string name="object">Object : </string>
+    <string name="desc">Description: </string>
+    <string name="date_decl">Déclaré le : </string>
+    <string name="date_deb">Début : </string>
+    <string name="date_fin">Fin : </string>
+    <string name="price">Prix : </string>
+    <string name="chb">Chambre : </string>
+    <string name="fac">Facture : </string>
+    <string name="laoding">Chargement ..</string>
+    <string name="laoding_error">Erreur de connexion </string>
 </resources>

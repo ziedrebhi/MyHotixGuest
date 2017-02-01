@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -48,6 +49,7 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
     private static String LOG_TAG = "RestaurantsFragment";
     MaterialDialog.Builder msgConnecting;
     MaterialDialog dialog;
+    TextView msgEmpty;
     private SliderLayout mDemoSlider;
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -95,7 +97,8 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
         View view = inflater.inflate(R.layout.fragment_restaurants, container, false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         mDemoSlider = (SliderLayout) view.findViewById(R.id.slider);
-
+        msgEmpty = (TextView) view.findViewById(R.id.emptyMsg);
+        msgEmpty.setVisibility(View.GONE);
 
         HashMap<String, String> url_maps = new HashMap<String, String>();
         url_maps.put("Hannibal", "http://static2.hypable.com/wp-content/uploads/2013/12/hannibal-season-2-release-date.jpg");
@@ -143,7 +146,7 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
         }
 
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new RestaurantsViewAdapter(null);
+        mAdapter = new RestaurantsViewAdapter(null, getActivity());
         //  mRecyclerView.setAdapter(mAdapter);
         return view;
     }
@@ -220,7 +223,7 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
     public void ShowDialogMaterial(boolean isOk) {
         msgConnecting = new MaterialDialog.Builder(getActivity());
         if (isOk) {
-            msgConnecting.content("Loading. Please wait...")
+            msgConnecting.content(getResources().getString(R.string.laoding))
                     .progress(true, 0)
                     .cancelable(true)
                     .typeface("Roboto-Light.ttf", "Roboto.ttf")
@@ -229,7 +232,7 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
                     .autoDismiss(false);
             dialog = msgConnecting.build();
         } else {
-            msgConnecting.content("Erreur de Connexion")
+            msgConnecting.content(getResources().getString(R.string.laoding_error))
                     .typeface("Roboto-Light.ttf", "Roboto.ttf")
                     .theme(Theme.LIGHT)
                     .positiveText("Ok");
@@ -277,9 +280,13 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
         protected void onPostExecute(RestaurantModel greeting1) {
             if (isConnected.isStatus()) {
                 dialog.dismiss();
-                Log.i("HttpRequestTask", String.valueOf(isConnected.getData().size()));
-                mAdapter = new RestaurantsViewAdapter(getDataSet(isConnected));
-                mRecyclerView.setAdapter(mAdapter);
+                if (isConnected.getData().size() != 0) {
+                    Log.i("HttpRequestTask", String.valueOf(isConnected.getData().size()));
+                    mAdapter = new RestaurantsViewAdapter(getDataSet(isConnected), getActivity());
+                    mRecyclerView.setAdapter(mAdapter);
+                } else {
+                    msgEmpty.setVisibility(View.VISIBLE);
+                }
             } else {
                 dialog.dismiss();
                 ShowDialogMaterial(false);

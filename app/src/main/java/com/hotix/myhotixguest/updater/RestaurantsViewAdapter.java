@@ -1,5 +1,6 @@
 package com.hotix.myhotixguest.updater;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,10 +22,12 @@ public class RestaurantsViewAdapter extends RecyclerView
         .DataObjectHolder> {
     private static String LOG_TAG = "RestaurantsViewAdapter";
     private static MyClickListener myClickListener;
+    Context context;
     private ArrayList<ItemRestaurantModel> mDataset;
 
-    public RestaurantsViewAdapter(ArrayList<ItemRestaurantModel> myDataset) {
+    public RestaurantsViewAdapter(ArrayList<ItemRestaurantModel> myDataset, Context context1) {
         mDataset = myDataset;
+        context = context1;
     }
 
     public void setOnItemClickListener(MyClickListener myClickListener) {

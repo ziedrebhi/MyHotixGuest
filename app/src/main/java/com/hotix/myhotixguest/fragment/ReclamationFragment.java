@@ -2,6 +2,7 @@ package com.hotix.myhotixguest.fragment;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,9 +13,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.hotix.myhotixguest.R;
-import com.hotix.myhotixguest.other.DataObject;
-import com.hotix.myhotixguest.updater.MyRecyclerViewAdapter;
+import com.hotix.myhotixguest.entities.ItemReclamationModel;
+import com.hotix.myhotixguest.entities.ReclamationModel;
+import com.hotix.myhotixguest.entities.UserInfoModel;
+import com.hotix.myhotixguest.updater.ReclamationsViewAdapter;
+
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 
@@ -32,6 +40,9 @@ public class ReclamationFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static String LOG_TAG = "ReclamationFragment";
+    MaterialDialog.Builder msgConnecting;
+    MaterialDialog dialog;
+    TextView msgEmpty;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -81,9 +92,10 @@ public class ReclamationFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new MyRecyclerViewAdapter(getDataSet());
-        mRecyclerView.setAdapter(mAdapter);
-        TextView msgEmpty = (TextView) view.findViewById(R.id.emptyMsg);
+        ShowDialogMaterial(true);
+        mAdapter = new ReclamationsViewAdapter(null, getActivity());
+        //  mRecyclerView.setAdapter(mAdapter);
+        msgEmpty = (TextView) view.findViewById(R.id.emptyMsg);
         msgEmpty.setVisibility(View.GONE);
         return view;
     }
@@ -115,23 +127,47 @@ public class ReclamationFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((MyRecyclerViewAdapter) mAdapter).setOnItemClickListener(new MyRecyclerViewAdapter
+        ((ReclamationsViewAdapter) mAdapter).setOnItemClickListener(new ReclamationsViewAdapter
                 .MyClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 Log.i(LOG_TAG, " Clicked on Item " + position);
             }
         });
+        new HttpRequestTask().execute();
     }
 
-    private ArrayList<DataObject> getDataSet() {
-        ArrayList results = new ArrayList<DataObject>();
-        for (int index = 0; index < 4; index++) {
-            DataObject obj = new DataObject("Some Primary Text " + index,
-                    "Secondary " + index, true);
-            results.add(index, obj);
+    private ArrayList<ItemReclamationModel> getDataSet(ReclamationModel model) {
+
+        ArrayList<ItemReclamationModel> data = new ArrayList<>(model.getData().size());
+        data.addAll(model.getData());
+        return data;
+
+    }
+
+    public String getURL() {
+        return "http://41.228.14.111/HNGAPI/api/myhotixguest/GetReclamations";
+    }
+
+    public void ShowDialogMaterial(boolean isOk) {
+        msgConnecting = new MaterialDialog.Builder(getActivity());
+        if (isOk) {
+            msgConnecting.content(getResources().getString(R.string.laoding))
+                    .progress(true, 0)
+                    .cancelable(true)
+                    .typeface("Roboto-Light.ttf", "Roboto.ttf")
+                    .theme(Theme.LIGHT)
+                    .progressIndeterminateStyle(false)
+                    .autoDismiss(false);
+            dialog = msgConnecting.build();
+        } else {
+            msgConnecting.content(getResources().getString(R.string.laoding_error))
+                    .typeface("Roboto-Light.ttf", "Roboto.ttf")
+                    .theme(Theme.LIGHT)
+                    .positiveText("Ok");
+            dialog = msgConnecting.build();
+            dialog.show();
         }
-        return results;
     }
 
     /**
@@ -147,5 +183,51 @@ public class ReclamationFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private class HttpRequestTask extends AsyncTask<Void, Void, ReclamationModel> {
+        ReclamationModel isConnected = null;
+
+        @Override
+        protected ReclamationModel doInBackground(Void... params) {
+            try {
+                final String url = getURL() + "?chambre=" + UserInfoModel.getInstance().getRoom();
+                ;
+                Log.i("HttpRequestTask", url.toString());
+                RestTemplate restTemplate = new RestTemplate();
+                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+                isConnected = restTemplate.getForObject(url, ReclamationModel.class);
+                Log.i("HttpRequestTask", isConnected.toString());
+                return isConnected;
+            } catch (Exception e) {
+                Log.e("ReclamationFragment", e.getMessage(), e);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(ReclamationModel greeting1) {
+            if (isConnected.isStatus()) {
+                dialog.dismiss();
+                Log.i("HttpRequestTask", String.valueOf(isConnected.getData().size()));
+                if (isConnected.getData().size() == 0) {
+                    msgEmpty.setVisibility(View.VISIBLE);
+                } else {
+                    mAdapter = new ReclamationsViewAdapter(getDataSet(isConnected), getActivity());
+                    mRecyclerView.setAdapter(mAdapter);
+                }
+            } else {
+                dialog.dismiss();
+                ShowDialogMaterial(false);
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog.show();
+        }
+
     }
 }

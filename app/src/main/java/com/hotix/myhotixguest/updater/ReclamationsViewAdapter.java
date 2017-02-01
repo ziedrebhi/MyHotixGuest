@@ -1,6 +1,7 @@
 package com.hotix.myhotixguest.updater;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.hotix.myhotixguest.R;
-import com.hotix.myhotixguest.other.DataObject;
+import com.hotix.myhotixguest.entities.ItemReclamationModel;
 
 import java.util.ArrayList;
 
@@ -17,17 +18,17 @@ import java.util.ArrayList;
  * Created by ziedrebhi on 30/01/2017.
  */
 
-public class MyRecyclerViewAdapter extends RecyclerView
-        .Adapter<MyRecyclerViewAdapter
+public class ReclamationsViewAdapter extends RecyclerView
+        .Adapter<ReclamationsViewAdapter
         .DataObjectHolder> {
-    private static String LOG_TAG = "MyRecyclerViewAdapter";
+    private static String LOG_TAG = "ReclamationsViewAdapter";
     private static MyClickListener myClickListener;
     Context context;
-    private ArrayList<DataObject> mDataset;
+    private ArrayList<ItemReclamationModel> mDataset;
 
-    public MyRecyclerViewAdapter(ArrayList<DataObject> myDataset, Context context1) {
+    public ReclamationsViewAdapter(ArrayList<ItemReclamationModel> myDataset, Context context2) {
         mDataset = myDataset;
-        context = context1;
+        context = context2;
     }
 
     public void setOnItemClickListener(MyClickListener myClickListener) {
@@ -38,7 +39,7 @@ public class MyRecyclerViewAdapter extends RecyclerView
     public DataObjectHolder onCreateViewHolder(ViewGroup parent,
                                                int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.card_view_row, parent, false);
+                .inflate(R.layout.reclamation_view_row, parent, false);
 
         DataObjectHolder dataObjectHolder = new DataObjectHolder(view);
         return dataObjectHolder;
@@ -46,12 +47,17 @@ public class MyRecyclerViewAdapter extends RecyclerView
 
     @Override
     public void onBindViewHolder(DataObjectHolder holder, int position) {
-        holder.label.setText(mDataset.get(position).getmText1());
-        holder.dateTime.setText(mDataset.get(position).getmText2());
+        holder.description.setText(mDataset.get(position).getDescription());
+
+        holder.objet.setText(context.getResources().getString(R.string.object) + String.valueOf(mDataset.get(position).getObject()));
+        holder.date.setText(context.getResources().getString(R.string.date_decl) + mDataset.get(position).getDateCreation());
+        if (mDataset.get(position).isTraite()) {
+            holder.card.setBackgroundResource(R.color.colorPrimaryLeger);
+        }
 
     }
 
-    public void addItem(DataObject dataObj, int index) {
+    public void addItem(ItemReclamationModel dataObj, int index) {
         mDataset.add(index, dataObj);
         notifyItemInserted(index);
     }
@@ -73,13 +79,17 @@ public class MyRecyclerViewAdapter extends RecyclerView
     public static class DataObjectHolder extends RecyclerView.ViewHolder
             implements View
             .OnClickListener {
-        TextView label;
-        TextView dateTime;
+        TextView objet;
+        TextView description;
+        TextView date;
+        CardView card;
 
         public DataObjectHolder(View itemView) {
             super(itemView);
-            label = (TextView) itemView.findViewById(R.id.textView);
-            dateTime = (TextView) itemView.findViewById(R.id.textView2);
+            card = (CardView) itemView.findViewById(R.id.card_view);
+            objet = (TextView) itemView.findViewById(R.id.textView);
+            description = (TextView) itemView.findViewById(R.id.textView2);
+            date = (TextView) itemView.findViewById(R.id.textView6);
             Log.i(LOG_TAG, "Adding Listener");
             itemView.setOnClickListener(this);
         }

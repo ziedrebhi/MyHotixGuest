@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -47,6 +48,7 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
     private static final String ARG_PARAM2 = "param2";
     MaterialDialog.Builder msgConnecting;
     MaterialDialog dialog;
+    TextView msgEmpty;
     private SliderLayout mDemoSlider;
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -92,6 +94,8 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_activites, container, false);
+        msgEmpty = (TextView) view.findViewById(R.id.emptyMsg);
+        msgEmpty.setVisibility(View.GONE);
 
         mDemoSlider = (SliderLayout) view.findViewById(R.id.slider);
         HashMap<String, String> url_maps = new HashMap<String, String>();
@@ -144,7 +148,7 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
         }
 
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new ActivitesViewAdapter(null);
+        mAdapter = new ActivitesViewAdapter(null, getActivity());
         //mRecyclerView.setAdapter(mAdapter);
         return view;
     }
@@ -221,7 +225,7 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
     public void ShowDialogMaterial(boolean isOk) {
         msgConnecting = new MaterialDialog.Builder(getActivity());
         if (isOk) {
-            msgConnecting.content("Loading. Please wait...")
+            msgConnecting.content(getResources().getString(R.string.laoding))
                     .progress(true, 0)
                     .cancelable(true)
                     .typeface("Roboto-Light.ttf", "Roboto.ttf")
@@ -230,7 +234,7 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
                     .autoDismiss(false);
             dialog = msgConnecting.build();
         } else {
-            msgConnecting.content("Erreur de Connexion")
+            msgConnecting.content(getResources().getString(R.string.laoding_error))
                     .typeface("Roboto-Light.ttf", "Roboto.ttf")
                     .theme(Theme.LIGHT)
                     .positiveText("Ok");
@@ -278,9 +282,13 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
         protected void onPostExecute(ActiviteModel greeting1) {
             if (isConnected.isStatus()) {
                 dialog.dismiss();
-                Log.i("HttpRequestTask", String.valueOf(isConnected.getData().size()));
-                mAdapter = new ActivitesViewAdapter(getDataSet(isConnected));
-                mRecyclerView.setAdapter(mAdapter);
+                if (isConnected.getData().size() != 0) {
+                    Log.i("HttpRequestTask", String.valueOf(isConnected.getData().size()));
+                    mAdapter = new ActivitesViewAdapter(getDataSet(isConnected), getActivity());
+                    mRecyclerView.setAdapter(mAdapter);
+                } else {
+                    msgEmpty.setVisibility(View.VISIBLE);
+                }
             } else {
                 dialog.dismiss();
                 ShowDialogMaterial(false);

@@ -29,6 +29,7 @@ import com.hotix.myhotixguest.R;
 import com.hotix.myhotixguest.entities.UserInfoModel;
 import com.hotix.myhotixguest.fragment.ActiviteFragment;
 import com.hotix.myhotixguest.fragment.CommandeFragment;
+import com.hotix.myhotixguest.fragment.DetailsFragment;
 import com.hotix.myhotixguest.fragment.FactureFragment;
 import com.hotix.myhotixguest.fragment.NotificationsFragment;
 import com.hotix.myhotixguest.fragment.ReclamationFragment;
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG_SETTINGS = "restaurants";
     private static final String TAG_RESA = "reservation";
     private static final String TAG_COMMANDE = "commande";
+    private static final String TAG_DETAILS = "details";
     // index to identify current nav menu item
     public static int navItemIndex = 0;
     public static String CURRENT_TAG = TAG_FACTURE;
@@ -109,10 +111,10 @@ public class MainActivity extends AppCompatActivity {
                                         .setAction("Action", null).show();
 
                                 MaterialDialog.Builder msgConnecting = new MaterialDialog.Builder(MainActivity.this);
-                                msgConnecting.content("Loading. Please wait...")
+                                msgConnecting.content(getResources().getString(R.string.laoding))
                                         .progress(true, 0)
                                         .cancelable(true)
-                                        .typeface("Roboto-Light.ttf", "Roboto.ttf")
+                                        .typeface("Roboto.ttf", "Roboto.ttf")
                                         .theme(Theme.LIGHT)
 
                                         .progressIndeterminateStyle(false)
@@ -130,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             navItemIndex = 0;
-            CURRENT_TAG = TAG_FACTURE;
+            CURRENT_TAG = TAG_DETAILS;
             loadHomeFragment();
         }
     }
@@ -143,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
     private void loadNavHeader() {
         // name, website
         txtName.setText(UserInfoModel.getInstance().getName());
-        txtWebsite.setText("Chambre : " + UserInfoModel.getInstance().getRoom());
+        txtWebsite.setText(getResources().getString(R.string.chb) + UserInfoModel.getInstance().getRoom());
 
         // loading header background image
         Glide.with(this).load(urlNavHeaderBg)
@@ -160,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
                 .into(imgProfile);
 
         // showing dot next to notifications label
-        navigationView.getMenu().getItem(3).setActionView(R.layout.menu_dot);
+        navigationView.getMenu().getItem(4).setActionView(R.layout.menu_dot);
     }
 
     /***
@@ -219,38 +221,42 @@ public class MainActivity extends AppCompatActivity {
     private Fragment getHomeFragment() {
         switch (navItemIndex) {
             case 0:
+                // Details Fragment
+                DetailsFragment DetailsFragment = new DetailsFragment();
+                return DetailsFragment;
+            case 1:
                 // facture Fragment
                 FactureFragment factureFragment = new FactureFragment();
                 return factureFragment;
-            case 1:
+            case 2:
                 // Reclamation Fragment
                 ReclamationFragment reclamationFragment = new ReclamationFragment();
                 return reclamationFragment;
-            case 2:
+            case 3:
                 // Activite Fragment
                 ActiviteFragment activiteFragment = new ActiviteFragment();
                 return activiteFragment;
-            case 3:
+            case 4:
                 // notifications fragment
                 NotificationsFragment notificationsFragment = new NotificationsFragment();
                 return notificationsFragment;
 
-            case 4:
+            case 5:
                 // Restaurants Fragment
                 RestaurantsFragment settingsFragment = new RestaurantsFragment();
                 return settingsFragment;
 
-            case 5:
+            case 6:
                 // Commande Fragment
                 CommandeFragment CommandeFragment = new CommandeFragment();
                 return CommandeFragment;
 
-            case 6:
+            case 7:
                 // Reservation Fragment
                 ReservationFragment ReservationFragment = new ReservationFragment();
                 return ReservationFragment;
             default:
-                return new FactureFragment();
+                return new DetailsFragment();
         }
     }
 
@@ -279,32 +285,36 @@ public class MainActivity extends AppCompatActivity {
                 //Check to see which item was being clicked and perform appropriate action
                 switch (menuItem.getItemId()) {
                     //Replacing the main content with ContentFragment Which is our Inbox View;
-                    case R.id.nav_facture:
+                    case R.id.nav_details:
                         navItemIndex = 0;
+                        CURRENT_TAG = TAG_DETAILS;
+                        break;
+                    case R.id.nav_facture:
+                        navItemIndex = 1;
                         CURRENT_TAG = TAG_FACTURE;
                         break;
                     case R.id.nav_reclamations:
-                        navItemIndex = 1;
+                        navItemIndex = 2;
                         CURRENT_TAG = TAG_RECLAM;
                         break;
                     case R.id.nav_activite:
-                        navItemIndex = 2;
+                        navItemIndex = 3;
                         CURRENT_TAG = TAG_MOVIES;
                         break;
                     case R.id.nav_notifications:
-                        navItemIndex = 3;
+                        navItemIndex = 4;
                         CURRENT_TAG = TAG_NOTIFICATIONS;
                         break;
                     case R.id.nav_restaurants:
-                        navItemIndex = 4;
+                        navItemIndex = 5;
                         CURRENT_TAG = TAG_SETTINGS;
                         break;
                     case R.id.nav_commande:
-                        navItemIndex = 5;
+                        navItemIndex = 6;
                         CURRENT_TAG = TAG_COMMANDE;
                         break;
                     case R.id.nav_reservation:
-                        navItemIndex = 6;
+                        navItemIndex = 7;
                         CURRENT_TAG = TAG_RESA;
                         break;
                     case R.id.nav_about_us:
@@ -372,7 +382,7 @@ public class MainActivity extends AppCompatActivity {
             // rather than home
             if (navItemIndex != 0) {
                 navItemIndex = 0;
-                CURRENT_TAG = TAG_FACTURE;
+                CURRENT_TAG = TAG_DETAILS;
                 loadHomeFragment();
                 return;
             }
@@ -386,12 +396,12 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
 
         // show menu only when home fragment is selected
-        if (navItemIndex != 3) {
+        if (navItemIndex != 4) {
             getMenuInflater().inflate(R.menu.main, menu);
         }
 
         // when fragment is notifications, load the menu created for notifications
-        if (navItemIndex == 3) {
+        if (navItemIndex == 4) {
             getMenuInflater().inflate(R.menu.notifications, menu);
         }
         return true;
@@ -430,7 +440,7 @@ public class MainActivity extends AppCompatActivity {
 
     // show or hide the fab
     private void toggleFab() {
-        if (navItemIndex == 1)
+        if (navItemIndex == 2)
             fab.show();
         else
             fab.hide();
