@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.hotix.myhotixguest.R;
-import com.hotix.myhotixguest.entities.ItemActiviteModel;
+import com.hotix.myhotixguest.entities.ItemRestaurantModel;
 
 import java.util.ArrayList;
 
@@ -16,14 +16,14 @@ import java.util.ArrayList;
  * Created by ziedrebhi on 30/01/2017.
  */
 
-public class ActivitesViewAdapter extends RecyclerView
-        .Adapter<ActivitesViewAdapter
+public class RestaurantsViewAdapter extends RecyclerView
+        .Adapter<RestaurantsViewAdapter
         .DataObjectHolder> {
-    private static String LOG_TAG = "ActivitesViewAdapter";
+    private static String LOG_TAG = "RestaurantsViewAdapter";
     private static MyClickListener myClickListener;
-    private ArrayList<ItemActiviteModel> mDataset;
+    private ArrayList<ItemRestaurantModel> mDataset;
 
-    public ActivitesViewAdapter(ArrayList<ItemActiviteModel> myDataset) {
+    public RestaurantsViewAdapter(ArrayList<ItemRestaurantModel> myDataset) {
         mDataset = myDataset;
     }
 
@@ -35,7 +35,7 @@ public class ActivitesViewAdapter extends RecyclerView
     public DataObjectHolder onCreateViewHolder(ViewGroup parent,
                                                int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.activite_view_row, parent, false);
+                .inflate(R.layout.card_view_row, parent, false);
 
         DataObjectHolder dataObjectHolder = new DataObjectHolder(view);
         return dataObjectHolder;
@@ -45,12 +45,10 @@ public class ActivitesViewAdapter extends RecyclerView
     public void onBindViewHolder(DataObjectHolder holder, int position) {
         holder.label.setText(mDataset.get(position).getNom());
         holder.dateTime.setText(mDataset.get(position).getDescription());
-        holder.price.setText(String.valueOf(mDataset.get(position).getPrix()));
-        holder.dateDeb.setText(mDataset.get(position).getDateDebut());
-        holder.dateFin.setText(mDataset.get(position).getDateFin());
+
     }
 
-    public void addItem(ItemActiviteModel dataObj, int index) {
+    public void addItem(ItemRestaurantModel dataObj, int index) {
         mDataset.add(index, dataObj);
         notifyItemInserted(index);
     }
@@ -74,17 +72,11 @@ public class ActivitesViewAdapter extends RecyclerView
             .OnClickListener {
         TextView label;
         TextView dateTime;
-        TextView price;
-        TextView dateDeb;
-        TextView dateFin;
 
         public DataObjectHolder(View itemView) {
             super(itemView);
             label = (TextView) itemView.findViewById(R.id.textView);
             dateTime = (TextView) itemView.findViewById(R.id.textView2);
-            price = (TextView) itemView.findViewById(R.id.textView5);
-            dateDeb = (TextView) itemView.findViewById(R.id.textView7);
-            dateFin = (TextView) itemView.findViewById(R.id.textView8);
             Log.i(LOG_TAG, "Adding Listener");
             itemView.setOnClickListener(this);
         }

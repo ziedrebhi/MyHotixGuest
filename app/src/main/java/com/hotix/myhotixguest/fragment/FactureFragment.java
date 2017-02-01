@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import com.afollestad.materialdialogs.Theme;
 import com.hotix.myhotixguest.R;
 import com.hotix.myhotixguest.entities.FactureModel;
 import com.hotix.myhotixguest.entities.ItemFactureModel;
+import com.hotix.myhotixguest.entities.UserInfoModel;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -45,6 +47,7 @@ public class FactureFragment extends Fragment {
     TableLayout tl;
     TextView totale;
     TextView numChb;
+    String Chambre = "";
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -89,7 +92,7 @@ public class FactureFragment extends Fragment {
         tl = (TableLayout) view.findViewById(R.id.table1);
         totale = (TextView) view.findViewById(R.id.totalFacture);
         numChb = (TextView) view.findViewById(R.id.numchbFact);
-        numChb.setText("93");
+        numChb.setText(UserInfoModel.getInstance().getRoom());
         ShowDialogMaterial(true);
         return view;
     }
@@ -121,6 +124,7 @@ public class FactureFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Chambre = UserInfoModel.getInstance().getRoom();
         new HttpRequestTask().execute();
     }
 
@@ -183,7 +187,7 @@ public class FactureFragment extends Fragment {
         @Override
         protected FactureModel doInBackground(Void... params) {
             try {
-                final String url = getURL() + "?chambre=" + chambre;
+                final String url = getURL() + "?chambre=" + UserInfoModel.getInstance().getRoom();
                 Log.i("HttpRequestTask", url.toString());
                 RestTemplate restTemplate = new RestTemplate();
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
@@ -217,24 +221,31 @@ public class FactureFragment extends Fragment {
                     TextView t = generateTextView(list.get(i).getDateFacturation(), layoutParams);
                     t.setBackgroundResource(android.R.color.white);
                     t.setTextSize(12);
-                    tr.addView(t);
                     t.setBackgroundResource(R.drawable.fact_shape);
+                    tr.addView(t);
+
 
                     TextView a = generateTextView(list.get(i).getDesignation(), layoutParams);
                     a.setTextSize(12);
-                    tr.addView(a);
                     a.setBackgroundResource(R.drawable.fact_shape);
+                    tr.addView(a);
+
 
                     TextView b1 = generateTextView(list.get(i).getComment(), layoutParams);
                     b1.setBackgroundResource(R.drawable.fact_shape);
-                    tr.addView(b1);
+                    //b1.setElegantTextHeight(true);
+                    b1.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+                    b1.setSingleLine(false);
                     b1.setTextSize(14);
+                    tr.addView(b1);
+
 
                     TextView a1 = generateTextView(String.valueOf(list.get(i).getMontant()), layoutParams);
                     a1.setBackgroundColor(Color.parseColor("#582c7e"));
-                    tr.addView(a1);
                     a1.setTextColor(Color.WHITE);
                     a1.setTextSize(14);
+                    tr.addView(a1);
+
 
                     tot = tot + Float.parseFloat(String.valueOf(list.get(i).getMontant()));
 

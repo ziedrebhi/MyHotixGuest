@@ -3,6 +3,7 @@ package com.hotix.myhotixguest.fragment;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,14 +14,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
 import com.hotix.myhotixguest.R;
-import com.hotix.myhotixguest.other.DataObject;
+import com.hotix.myhotixguest.entities.ActiviteModel;
+import com.hotix.myhotixguest.entities.ItemActiviteModel;
 import com.hotix.myhotixguest.updater.ActivitesViewAdapter;
+
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +45,8 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    MaterialDialog.Builder msgConnecting;
+    MaterialDialog dialog;
     private SliderLayout mDemoSlider;
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -45,7 +54,6 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-
     private OnFragmentInteractionListener mListener;
 
     public ActiviteFragment() {
@@ -122,7 +130,7 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.list_activite);
 
-
+        ShowDialogMaterial(true);
         mRecyclerView.setHasFixedSize(true);
         //  mLayoutManager = new LinearLayoutManager(getActivity());
 
@@ -136,8 +144,8 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
         }
 
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new ActivitesViewAdapter(getDataSet());
-        mRecyclerView.setAdapter(mAdapter);
+        mAdapter = new ActivitesViewAdapter(null);
+        //mRecyclerView.setAdapter(mAdapter);
         return view;
     }
 
@@ -158,16 +166,15 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
                 Log.i("RestaurantsFragments", " Clicked on Item " + position);
             }
         });
+        new HttpRequestTask().execute();
     }
 
-    private ArrayList<DataObject> getDataSet() {
-        ArrayList results = new ArrayList<DataObject>();
-        for (int index = 0; index < 7; index++) {
-            DataObject obj = new DataObject("Some Primary Text " + index,
-                    "Secondary " + index);
-            results.add(index, obj);
-        }
-        return results;
+    private ArrayList<ItemActiviteModel> getDataSet(ActiviteModel model) {
+
+        ArrayList<ItemActiviteModel> data = new ArrayList<>(model.getData().size());
+        data.addAll(model.getData());
+        return data;
+
     }
 
     @Override
@@ -207,6 +214,31 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
 
     }
 
+    public String getURL() {
+        return "http://41.228.14.111/HNGAPI/api/myhotixguest/GetActivites";
+    }
+
+    public void ShowDialogMaterial(boolean isOk) {
+        msgConnecting = new MaterialDialog.Builder(getActivity());
+        if (isOk) {
+            msgConnecting.content("Loading. Please wait...")
+                    .progress(true, 0)
+                    .cancelable(true)
+                    .typeface("Roboto-Light.ttf", "Roboto.ttf")
+                    .theme(Theme.LIGHT)
+                    .progressIndeterminateStyle(false)
+                    .autoDismiss(false);
+            dialog = msgConnecting.build();
+        } else {
+            msgConnecting.content("Erreur de Connexion")
+                    .typeface("Roboto-Light.ttf", "Roboto.ttf")
+                    .theme(Theme.LIGHT)
+                    .positiveText("Ok");
+            dialog = msgConnecting.build();
+            dialog.show();
+        }
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -220,5 +252,46 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private class HttpRequestTask extends AsyncTask<Void, Void, ActiviteModel> {
+        ActiviteModel isConnected = null;
+
+        @Override
+        protected ActiviteModel doInBackground(Void... params) {
+            try {
+                final String url = getURL();
+                Log.i("HttpRequestTask", url.toString());
+                RestTemplate restTemplate = new RestTemplate();
+                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+                isConnected = restTemplate.getForObject(url, ActiviteModel.class);
+                Log.i("HttpRequestTask", isConnected.toString());
+                return isConnected;
+            } catch (Exception e) {
+                Log.e("ActiviteFragment", e.getMessage(), e);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(ActiviteModel greeting1) {
+            if (isConnected.isStatus()) {
+                dialog.dismiss();
+                Log.i("HttpRequestTask", String.valueOf(isConnected.getData().size()));
+                mAdapter = new ActivitesViewAdapter(getDataSet(isConnected));
+                mRecyclerView.setAdapter(mAdapter);
+            } else {
+                dialog.dismiss();
+                ShowDialogMaterial(false);
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog.show();
+        }
+
     }
 }

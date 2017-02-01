@@ -3,6 +3,7 @@ package com.hotix.myhotixguest.fragment;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,14 +14,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
 import com.hotix.myhotixguest.R;
-import com.hotix.myhotixguest.other.DataObject;
-import com.hotix.myhotixguest.updater.MyRecyclerViewAdapter;
+import com.hotix.myhotixguest.entities.ItemRestaurantModel;
+import com.hotix.myhotixguest.entities.RestaurantModel;
+import com.hotix.myhotixguest.updater.RestaurantsViewAdapter;
+
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +46,8 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static String LOG_TAG = "RestaurantsFragment";
+    MaterialDialog.Builder msgConnecting;
+    MaterialDialog dialog;
     private SliderLayout mDemoSlider;
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -120,7 +129,7 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
         mDemoSlider.setDuration(4000);
         mDemoSlider.addOnPageChangeListener(this);
         // Inflate the layout for this fragment
-
+        ShowDialogMaterial(true);
         mRecyclerView.setHasFixedSize(true);
         //  mLayoutManager = new LinearLayoutManager(getActivity());
 
@@ -134,8 +143,8 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
         }
 
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new MyRecyclerViewAdapter(getDataSet());
-        mRecyclerView.setAdapter(mAdapter);
+        mAdapter = new RestaurantsViewAdapter(null);
+        //  mRecyclerView.setAdapter(mAdapter);
         return view;
     }
 
@@ -186,23 +195,47 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
     @Override
     public void onResume() {
         super.onResume();
-        ((MyRecyclerViewAdapter) mAdapter).setOnItemClickListener(new MyRecyclerViewAdapter
+        ((RestaurantsViewAdapter) mAdapter).setOnItemClickListener(new RestaurantsViewAdapter
                 .MyClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 Log.i(LOG_TAG, " Clicked on Item " + position);
             }
         });
+        new HttpRequestTask().execute();
     }
 
-    private ArrayList<DataObject> getDataSet() {
-        ArrayList results = new ArrayList<DataObject>();
-        for (int index = 0; index < 4; index++) {
-            DataObject obj = new DataObject("Some Primary Text " + index,
-                    "Secondary " + index);
-            results.add(index, obj);
+    private ArrayList<ItemRestaurantModel> getDataSet(RestaurantModel model) {
+
+        ArrayList<ItemRestaurantModel> data = new ArrayList<>(model.getData().size());
+        data.addAll(model.getData());
+        return data;
+
+    }
+
+    public String getURL() {
+        return "http://41.228.14.111/HNGAPI/api/myhotixguest/GetRestaurants";
+    }
+
+    public void ShowDialogMaterial(boolean isOk) {
+        msgConnecting = new MaterialDialog.Builder(getActivity());
+        if (isOk) {
+            msgConnecting.content("Loading. Please wait...")
+                    .progress(true, 0)
+                    .cancelable(true)
+                    .typeface("Roboto-Light.ttf", "Roboto.ttf")
+                    .theme(Theme.LIGHT)
+                    .progressIndeterminateStyle(false)
+                    .autoDismiss(false);
+            dialog = msgConnecting.build();
+        } else {
+            msgConnecting.content("Erreur de Connexion")
+                    .typeface("Roboto-Light.ttf", "Roboto.ttf")
+                    .theme(Theme.LIGHT)
+                    .positiveText("Ok");
+            dialog = msgConnecting.build();
+            dialog.show();
         }
-        return results;
     }
 
     /**
@@ -218,5 +251,46 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private class HttpRequestTask extends AsyncTask<Void, Void, RestaurantModel> {
+        RestaurantModel isConnected = null;
+
+        @Override
+        protected RestaurantModel doInBackground(Void... params) {
+            try {
+                final String url = getURL();
+                Log.i("HttpRequestTask", url.toString());
+                RestTemplate restTemplate = new RestTemplate();
+                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+                isConnected = restTemplate.getForObject(url, RestaurantModel.class);
+                Log.i("HttpRequestTask", isConnected.toString());
+                return isConnected;
+            } catch (Exception e) {
+                Log.e("ActiviteFragment", e.getMessage(), e);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(RestaurantModel greeting1) {
+            if (isConnected.isStatus()) {
+                dialog.dismiss();
+                Log.i("HttpRequestTask", String.valueOf(isConnected.getData().size()));
+                mAdapter = new RestaurantsViewAdapter(getDataSet(isConnected));
+                mRecyclerView.setAdapter(mAdapter);
+            } else {
+                dialog.dismiss();
+                ShowDialogMaterial(false);
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog.show();
+        }
+
     }
 }
