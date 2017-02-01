@@ -20,6 +20,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.hotix.myhotixguest.R;
 import com.hotix.myhotixguest.entities.FactureModel;
+import com.hotix.myhotixguest.entities.ItemFactureModel;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -43,6 +44,7 @@ public class FactureFragment extends Fragment {
     MaterialDialog dialog;
     TableLayout tl;
     TextView totale;
+    TextView numChb;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -86,6 +88,8 @@ public class FactureFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_facture, container, false);
         tl = (TableLayout) view.findViewById(R.id.table1);
         totale = (TextView) view.findViewById(R.id.totalFacture);
+        numChb = (TextView) view.findViewById(R.id.numchbFact);
+        numChb.setText("93");
         ShowDialogMaterial(true);
         return view;
     }
@@ -194,8 +198,8 @@ public class FactureFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(FactureModel greeting) {
-            if (isConnected.getStatus()) {
+        protected void onPostExecute(FactureModel greeting1) {
+            if (isConnected.isStatus()) {
                 dialog.dismiss();
 
 
@@ -203,42 +207,41 @@ public class FactureFragment extends Fragment {
                 float tot = 0;
                 LayoutParams layoutParams = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
 
-                Log.i("HttpRequestTask", String.valueOf(greeting.getData().size()));
-                for (int i = 0; i < greeting.getData().size(); i++) {
-                    List<FactureModel.FactureItemModel> list = greeting.getData();
+                Log.i("HttpRequestTask", String.valueOf(isConnected.getData().size()));
+                for (int i = 0; i < isConnected.getData().size(); i++) {
+                    List<ItemFactureModel> list = isConnected.getData();
 
                     tr = new TableRow(getActivity());
                     tr.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
 
                     TextView t = generateTextView(list.get(i).getDateFacturation(), layoutParams);
                     t.setBackgroundResource(android.R.color.white);
-                    t.setTextSize(10);
+                    t.setTextSize(12);
                     tr.addView(t);
                     t.setBackgroundResource(R.drawable.fact_shape);
 
                     TextView a = generateTextView(list.get(i).getDesignation(), layoutParams);
-                    a.setTextSize(10);
+                    a.setTextSize(12);
                     tr.addView(a);
                     a.setBackgroundResource(R.drawable.fact_shape);
 
                     TextView b1 = generateTextView(list.get(i).getComment(), layoutParams);
                     b1.setBackgroundResource(R.drawable.fact_shape);
                     tr.addView(b1);
-                    b1.setTextSize(12);
+                    b1.setTextSize(14);
 
                     TextView a1 = generateTextView(String.valueOf(list.get(i).getMontant()), layoutParams);
                     a1.setBackgroundColor(Color.parseColor("#582c7e"));
                     tr.addView(a1);
-                    a1.setTextSize(10);
+                    a1.setTextColor(Color.WHITE);
+                    a1.setTextSize(14);
 
-                    tot = tot + Float.parseFloat(String.valueOf(list.get(i).getMontant()).replaceAll(",", ""));
+                    tot = tot + Float.parseFloat(String.valueOf(list.get(i).getMontant()));
 
 
                     tl.addView(tr, layoutParams);
 
                 }
-                tot = tot / 1000;
-
                 totale.setText(Float.toString(tot) + " DT");
 
 

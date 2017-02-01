@@ -19,6 +19,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.hotix.myhotixguest.R;
 import com.hotix.myhotixguest.entities.LoginModel;
+import com.hotix.myhotixguest.entities.UserInfoModel;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -124,6 +125,8 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(LoginModel greeting) {
             if (isConnected.getStatus()) {
                 dialog.dismiss();
+                UserInfoModel.getInstance().setRoom(chambre);
+                UserInfoModel.getInstance().setName(isConnected.getData());
                 Intent main = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(main);
                 finish();

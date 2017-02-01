@@ -26,6 +26,7 @@ import com.afollestad.materialdialogs.Theme;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hotix.myhotixguest.R;
+import com.hotix.myhotixguest.entities.UserInfoModel;
 import com.hotix.myhotixguest.fragment.ActiviteFragment;
 import com.hotix.myhotixguest.fragment.CommandeFragment;
 import com.hotix.myhotixguest.fragment.FactureFragment;
@@ -141,8 +142,8 @@ public class MainActivity extends AppCompatActivity {
      */
     private void loadNavHeader() {
         // name, website
-        txtName.setText("Zied Rebhi");
-        txtWebsite.setText("Chambre : 172");
+        txtName.setText(UserInfoModel.getInstance().getName());
+        txtWebsite.setText("Chambre : " + UserInfoModel.getInstance().getRoom());
 
         // loading header background image
         Glide.with(this).load(urlNavHeaderBg)
@@ -259,6 +260,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void selectNavMenu() {
         navigationView.getMenu().getItem(navItemIndex).setChecked(true);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        toggleFab();
     }
 
     private void setUpNavigationView() {

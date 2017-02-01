@@ -1,9 +1,13 @@
 package com.hotix.myhotixguest.fragment;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +19,10 @@ import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
 import com.hotix.myhotixguest.R;
+import com.hotix.myhotixguest.other.DataObject;
+import com.hotix.myhotixguest.updater.ActivitesViewAdapter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -35,6 +42,9 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     private OnFragmentInteractionListener mListener;
 
@@ -74,8 +84,8 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_activites, container, false);
-        mDemoSlider = (SliderLayout) view.findViewById(R.id.slider);
 
+        mDemoSlider = (SliderLayout) view.findViewById(R.id.slider);
         HashMap<String, String> url_maps = new HashMap<String, String>();
         url_maps.put("Hannibal", "http://static2.hypable.com/wp-content/uploads/2013/12/hannibal-season-2-release-date.jpg");
         url_maps.put("Big Bang Theory", "http://tvfiles.alphacoders.com/100/hdclearart-10.png");
@@ -109,7 +119,25 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
         mDemoSlider.setCustomAnimation(new DescriptionAnimation());
         mDemoSlider.setDuration(4000);
         mDemoSlider.addOnPageChangeListener(this);
-        // Inflate the layout for this fragment
+
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.list_activite);
+
+
+        mRecyclerView.setHasFixedSize(true);
+        //  mLayoutManager = new LinearLayoutManager(getActivity());
+
+        int orientation = getActivity().getResources().getConfiguration().orientation;
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+
+            mLayoutManager = new GridLayoutManager(getActivity(), 2);
+        } else {
+
+            mLayoutManager = new GridLayoutManager(getActivity(), 4);
+        }
+
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new ActivitesViewAdapter(getDataSet());
+        mRecyclerView.setAdapter(mAdapter);
         return view;
     }
 
@@ -118,6 +146,28 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((ActivitesViewAdapter) mAdapter).setOnItemClickListener(new ActivitesViewAdapter
+                .MyClickListener() {
+            @Override
+            public void onItemClick(int position, View v) {
+                Log.i("RestaurantsFragments", " Clicked on Item " + position);
+            }
+        });
+    }
+
+    private ArrayList<DataObject> getDataSet() {
+        ArrayList results = new ArrayList<DataObject>();
+        for (int index = 0; index < 7; index++) {
+            DataObject obj = new DataObject("Some Primary Text " + index,
+                    "Secondary " + index);
+            results.add(index, obj);
+        }
+        return results;
     }
 
     @Override

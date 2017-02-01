@@ -1,20 +1,52 @@
 package com.hotix.myhotixguest.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by ziedrebhi on 31/01/2017.
  */
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonPropertyOrder({
+        "data",
+        "status"
+})
 public class FactureModel {
 
-    List<FactureItemModel> data;
-    Boolean status;
+    @JsonProperty("data")
+    private List<ItemFactureModel> data = null;
+    @JsonProperty("status")
+    private boolean status;
+    @JsonIgnore
+    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    public FactureModel() {
+    @JsonProperty("data")
+    public List<ItemFactureModel> getData() {
+        return data;
+    }
+
+    @JsonProperty("data")
+    public void setData(List<ItemFactureModel> data) {
+        this.data = data;
+    }
+
+    @JsonProperty("status")
+    public boolean isStatus() {
+        return status;
+    }
+
+    @JsonProperty("status")
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     @Override
@@ -22,93 +54,18 @@ public class FactureModel {
         return "FactureModel{" +
                 "data=" + data +
                 ", status=" + status +
+                ", additionalProperties=" + additionalProperties +
                 '}';
     }
 
-    public List<FactureItemModel> getData() {
-        return data;
+    @JsonAnyGetter
+    public Map<String, Object> getAdditionalProperties() {
+        return this.additionalProperties;
     }
 
-    public void setData(List<FactureItemModel> data) {
-        this.data = data;
+    @JsonAnySetter
+    public void setAdditionalProperty(String name, Object value) {
+        this.additionalProperties.put(name, value);
     }
 
-    public Boolean getStatus() {
-        return status;
-    }
-
-    public void setStatus(Boolean status) {
-        this.status = status;
-    }
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class FactureItemModel {
-        String dateFacturation;
-        float Montant;
-        String Designation;
-        String Arrangement;
-        String Comment;
-
-        public FactureItemModel() {
-        }
-
-        public FactureItemModel(String dateFacturation, float montant, String designation, String arrangement, String comment) {
-            this.dateFacturation = dateFacturation;
-            Montant = montant;
-            Designation = designation;
-            Arrangement = arrangement;
-            Comment = comment;
-        }
-
-        @Override
-        public String toString() {
-            return "FactureItemModel{" +
-                    "dateFacturation='" + dateFacturation + '\'' +
-                    ", Montant=" + Montant +
-                    ", Designation='" + Designation + '\'' +
-                    ", Arrangement='" + Arrangement + '\'' +
-                    ", Comment='" + Comment + '\'' +
-                    '}';
-        }
-
-        public String getDateFacturation() {
-            return dateFacturation;
-        }
-
-        public void setDateFacturation(String dateFacturation) {
-            this.dateFacturation = dateFacturation;
-        }
-
-        public float getMontant() {
-            return Montant;
-        }
-
-        public void setMontant(float montant) {
-            Montant = montant;
-        }
-
-        public String getDesignation() {
-            return Designation;
-        }
-
-        public void setDesignation(String designation) {
-            Designation = designation;
-        }
-
-        public String getArrangement() {
-            return Arrangement;
-        }
-
-        public void setArrangement(String arrangement) {
-            Arrangement = arrangement;
-        }
-
-        public String getComment() {
-            return Comment;
-        }
-
-        public void setComment(String comment) {
-            Comment = comment;
-        }
-    }
 }
