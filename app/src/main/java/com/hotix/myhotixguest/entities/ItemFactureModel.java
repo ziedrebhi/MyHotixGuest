@@ -26,7 +26,7 @@ public class ItemFactureModel {
     @JsonProperty("DateFacturation")
     private String dateFacturation;
     @JsonProperty("Montant")
-    private int montant;
+    private float montant;
     @JsonProperty("Designation")
     private String designation;
     @JsonProperty("Arrangement")
@@ -47,7 +47,7 @@ public class ItemFactureModel {
     }
 
     @JsonProperty("Montant")
-    public int getMontant() {
+    public float getMontant() {
         return montant;
     }
 

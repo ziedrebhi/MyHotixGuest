@@ -4,11 +4,21 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.hotix.myhotixguest.R;
+import com.hotix.myhotixguest.entities.ItemLoginModel;
+import com.hotix.myhotixguest.entities.LoginModel;
+import com.hotix.myhotixguest.entities.UserInfoModel;
+import com.hotix.myhotixguest.updater.UsersViewAdapter;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,13 +33,14 @@ public class DetailsFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    TextView name, qualite, dateArr, dateDep, Produit, arrang;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private OnFragmentInteractionListener mListener;
-
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
     public DetailsFragment() {
         // Required empty public constructor
     }
@@ -65,7 +76,26 @@ public class DetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_details, container, false);
+        View view = inflater.inflate(R.layout.fragment_details, container, false);
+
+        dateArr = (TextView) view.findViewById(R.id.tvNumber3);
+        dateDep = (TextView) view.findViewById(R.id.tvNumber4);
+        Produit = (TextView) view.findViewById(R.id.tvNumber5);
+        arrang = (TextView) view.findViewById(R.id.tvNumber6);
+        dateArr.setText(UserInfoModel.getInstance().getUsers().getData().get(0).getDateArrivee());
+        dateDep.setText(UserInfoModel.getInstance().getUsers().getData().get(0).getDateDepart());
+        arrang.setText(UserInfoModel.getInstance().getUsers().getData().get(0).getArrangement());
+        Produit.setText(UserInfoModel.getInstance().getUsers().getData().get(0).getProduit());
+
+        // List Users
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.list_user);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        mAdapter = new UsersViewAdapter(getDataSet(UserInfoModel.getInstance().getUsers()), getActivity());
+        mRecyclerView.setAdapter(mAdapter);
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -73,6 +103,26 @@ public class DetailsFragment extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+    }
+
+    private ArrayList<ItemLoginModel> getDataSet(LoginModel model) {
+
+        ArrayList<ItemLoginModel> data = new ArrayList<>(model.getData().size());
+        data.addAll(model.getData());
+        return data;
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((UsersViewAdapter) mAdapter).setOnItemClickListener(new UsersViewAdapter
+                .MyClickListener() {
+            @Override
+            public void onItemClick(int position, View v) {
+                Log.i("RestaurantsFragments", " Clicked on Item " + position);
+            }
+        });
     }
 
     @Override

@@ -7,7 +7,7 @@ package com.hotix.myhotixguest.entities;
 public class UserInfoModel {
     private static final UserInfoModel holder = new UserInfoModel();
     private String Room;
-    private String Name;
+    private LoginModel Users;
 
     public static UserInfoModel getInstance() {
         return holder;
@@ -21,11 +21,11 @@ public class UserInfoModel {
         Room = room;
     }
 
-    public String getName() {
-        return Name;
+    public LoginModel getUsers() {
+        return Users;
     }
 
-    public void setName(String name) {
-        Name = name;
+    public void setUsers(LoginModel users) {
+        Users = users;
     }
 }

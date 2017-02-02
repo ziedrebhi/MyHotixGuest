@@ -4,6 +4,9 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.hotix.myhotixguest.R;
@@ -43,6 +47,7 @@ public class ReclamationFragment extends Fragment {
     MaterialDialog.Builder msgConnecting;
     MaterialDialog dialog;
     TextView msgEmpty;
+    boolean wrapInScrollView;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -50,6 +55,7 @@ public class ReclamationFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private OnFragmentInteractionListener mListener;
+    private FloatingActionButton fab;
 
     public ReclamationFragment() {
         // Required empty public constructor
@@ -97,6 +103,39 @@ public class ReclamationFragment extends Fragment {
         //  mRecyclerView.setAdapter(mAdapter);
         msgEmpty = (TextView) view.findViewById(R.id.emptyMsg);
         msgEmpty.setVisibility(View.GONE);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+
+        wrapInScrollView = true;
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               /* Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();*/
+                final View view2 = view;
+                new MaterialDialog.Builder(getActivity())
+                        .customView(R.layout.reclamation_custom_view, wrapInScrollView)
+                        .typeface("Roboto-Light.ttf", "Roboto.ttf")
+                        .negativeText(R.string.picker_cancel)
+                        .positiveText(R.string.submit)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                // TODO
+                                Snackbar.make(view2, "Replace with your own action", Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null).show();
+
+
+                            }
+                        })
+
+                        .onNegative(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                // TODO
+                            }
+                        }).show();
+            }
+        });
         return view;
     }
 
@@ -154,7 +193,7 @@ public class ReclamationFragment extends Fragment {
         if (isOk) {
             msgConnecting.content(getResources().getString(R.string.laoding))
                     .progress(true, 0)
-                    .cancelable(true)
+                    .cancelable(false)
                     .typeface("Roboto-Light.ttf", "Roboto.ttf")
                     .theme(Theme.LIGHT)
                     .progressIndeterminateStyle(false)

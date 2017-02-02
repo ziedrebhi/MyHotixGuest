@@ -42,7 +42,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_login">Se Connecter</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -108,4 +108,10 @@
     <string name="fac">Facture : </string>
     <string name="laoding">Chargement ..</string>
     <string name="laoding_error">Erreur de connexion </string>
+    <string name="nbr_chambre">N° Chambres </string>
+    <string name="nbr_adultes">N° Adultes </string>
+    <string name="nbr_enfants">N° Enfants </string>
+    <string name="arr">Arrangement</string>
+    <string name="chbtype">Type Chambre</string>
+    <string name="dispo">Voir</string>
 </resources>

@@ -3,9 +3,7 @@ package com.hotix.myhotixguest.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -13,7 +11,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,8 +18,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.Theme;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.hotix.myhotixguest.R;
@@ -60,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imgNavHeaderBg, imgProfile;
     private TextView txtName, txtWebsite;
     private Toolbar toolbar;
-    private FloatingActionButton fab;
+    //private FloatingActionButton fab;
     // toolbar titles respected to selected nav menu item
     private String[] activityTitles;
 
@@ -80,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-        fab = (FloatingActionButton) findViewById(R.id.fab);
 
         // Navigation view header
         navHeader = navigationView.getHeaderView(0);
@@ -92,37 +86,7 @@ public class MainActivity extends AppCompatActivity {
         // load toolbar titles from string resources
         activityTitles = getResources().getStringArray(R.array.nav_item_activity_titles);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               /* Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
-                final View view2 = view;
-                new MaterialDialog.Builder(MainActivity.this)
-                        .content(R.string.input_content)
-                        .typeface("Roboto-Light.ttf", "Roboto.ttf")
-                        .positiveText(R.string.submit)
-                        .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE)
-                        .input(R.string.input_hint, R.string.input_prefill, new MaterialDialog.InputCallback() {
-                            @Override
-                            public void onInput(MaterialDialog dialog, CharSequence input) {
-                                // Do something
-                                Snackbar.make(view2, "Replace with your own action", Snackbar.LENGTH_LONG)
-                                        .setAction("Action", null).show();
 
-                                MaterialDialog.Builder msgConnecting = new MaterialDialog.Builder(MainActivity.this);
-                                msgConnecting.content(getResources().getString(R.string.laoding))
-                                        .progress(true, 0)
-                                        .cancelable(true)
-                                        .typeface("Roboto.ttf", "Roboto.ttf")
-                                        .theme(Theme.LIGHT)
-
-                                        .progressIndeterminateStyle(false)
-                                        .show();
-                            }
-                        }).show();
-            }
-        });
 
         // load nav menu header data
         loadNavHeader();
@@ -144,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void loadNavHeader() {
         // name, website
-        txtName.setText(UserInfoModel.getInstance().getName());
+        txtName.setText(UserInfoModel.getInstance().getUsers().getData().get(0).getName());
         txtWebsite.setText(getResources().getString(R.string.chb) + UserInfoModel.getInstance().getRoom());
 
         // loading header background image
@@ -440,9 +404,9 @@ public class MainActivity extends AppCompatActivity {
 
     // show or hide the fab
     private void toggleFab() {
-        if (navItemIndex == 2)
+     /*   if (navItemIndex == 2)
             fab.show();
         else
-            fab.hide();
+            fab.hide();*/
     }
 }

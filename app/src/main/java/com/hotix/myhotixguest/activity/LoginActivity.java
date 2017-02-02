@@ -54,8 +54,16 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(main);
                 finish();
                 */
-                new HttpRequestTask().execute();
-
+                if (isConnected()) {
+                    Log.i("HotixDev", "  Connected");
+                    if (isEmpty()) {
+                        Log.i("HotixDev", "Not empty");
+                        new HttpRequestTask().execute();
+                    }
+                } else {
+                    Log.i("HotixDev", "  Disconnected");
+                    ShowDialogMaterialConnection();
+                }
             }
         });
     }
@@ -75,12 +83,31 @@ public class LoginActivity extends AppCompatActivity {
         return false;
     }
 
+    public boolean isEmpty() {
+
+        if ((login.getText().toString().isEmpty()) && (password.getText().toString().isEmpty())) {
+            login.setError("Obligatoire");
+            password.setError("Obligatoire");
+            Log.i("HotixDev", "Both Empty");
+            return false;
+        } else if (password.getText().toString().isEmpty()) {
+            password.setError("Obligatoire");
+            Log.i("HotixDev", "password Empty");
+            return false;
+        } else if (login.getText().toString().isEmpty()) {
+            Log.i("HotixDev", "login Empty");
+            login.setError("Obligatoire");
+            return false;
+        }
+        return true;
+    }
+
     public void ShowDialogMaterial(boolean isOk) {
         msgConnecting = new MaterialDialog.Builder(LoginActivity.this);
         if (isOk) {
             msgConnecting.content(getResources().getString(R.string.laoding))
                     .progress(true, 0)
-                    .cancelable(true)
+                    .cancelable(false)
                     .typeface("Roboto-Light.ttf", "Roboto.ttf")
                     .theme(Theme.LIGHT)
                     .progressIndeterminateStyle(false)
@@ -96,6 +123,18 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    public void ShowDialogMaterialConnection() {
+        MaterialDialog.Builder msgConnecting = new MaterialDialog.Builder(LoginActivity.this);
+
+        msgConnecting.content(getResources().getString(R.string.laoding_error))
+                .typeface("Roboto-Light.ttf", "Roboto.ttf")
+                .theme(Theme.LIGHT)
+                .positiveText("Ok");
+        MaterialDialog dialog = msgConnecting.build();
+        dialog.show();
+
+    }
+
     private class HttpRequestTask extends AsyncTask<Void, Void, LoginModel> {
         LoginModel isConnected = null;
         String chambre = "";
@@ -109,6 +148,8 @@ public class LoginActivity extends AppCompatActivity {
                 restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
                 isConnected = restTemplate.getForObject(url, LoginModel.class);
                 Log.i("HttpRequestTask", isConnected.toString());
+                Log.i("HotixDev", String.valueOf(isConnected.isStatus()));
+                Log.i("HotixDev", String.valueOf(isConnected.getData().size()));
                 return isConnected;
             } catch (Exception e) {
                 Log.e("MainActivity", e.getMessage(), e);
@@ -119,10 +160,10 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(LoginModel greeting) {
-            if (isConnected.getStatus()) {
+            if (isConnected.isStatus() && (isConnected.getData().size() != 0)) {
                 dialog.dismiss();
                 UserInfoModel.getInstance().setRoom(chambre);
-                UserInfoModel.getInstance().setName(isConnected.getData());
+                UserInfoModel.getInstance().setUsers(isConnected);
                 Intent main = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(main);
                 finish();

@@ -15,7 +15,8 @@
         <com.daimajia.slider.library.SliderLayout
             android:id="@+id/slider"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="0dip"
+            android:layout_weight="40"
             custom:auto_cycle="true"
             custom:indicator_visibility="visible"
             custom:pager_animation="Accordion"
@@ -52,7 +53,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="0dip"
+            android:layout_weight="50">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/list_activite"

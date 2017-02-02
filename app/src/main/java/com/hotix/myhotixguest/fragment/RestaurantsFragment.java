@@ -225,7 +225,7 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
         if (isOk) {
             msgConnecting.content(getResources().getString(R.string.laoding))
                     .progress(true, 0)
-                    .cancelable(true)
+                    .cancelable(false)
                     .typeface("Roboto-Light.ttf", "Roboto.ttf")
                     .theme(Theme.LIGHT)
                     .progressIndeterminateStyle(false)
@@ -278,7 +278,7 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
 
         @Override
         protected void onPostExecute(RestaurantModel greeting1) {
-            if (isConnected.isStatus()) {
+            if (isConnected.isStatus() && (isConnected.getData().size() != 0)) {
                 dialog.dismiss();
                 if (isConnected.getData().size() != 0) {
                     Log.i("HttpRequestTask", String.valueOf(isConnected.getData().size()));

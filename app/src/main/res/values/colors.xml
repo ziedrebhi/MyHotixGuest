@@ -3,9 +3,12 @@
     <color name="colorPrimary">#582c7e</color>
     <color name="colorPrimaryDark">#360f56</color>
     <color name="colorAccent">#582c7e</color>
-    <color name="colorPrimaryLeger">#eee2ff</color>
+    <color name="colorPrimaryLeger">#8bc98a</color>
     <color name="colorWhite">#ffffff</color>
     <color name="blue_pressed">#51acde</color>
     <color name="blue_normal">#5289c2</color>
     <color name="colorHint">#999999</color>
+    <color name="spinner_base_color">#44000000</color>
+    <color name="disabled_color">#44000000</color>
+    <color name="error_color">#E7492E</color>
 </resources>

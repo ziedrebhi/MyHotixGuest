@@ -149,7 +149,7 @@ public class FactureFragment extends Fragment {
         if (isOk) {
             msgConnecting.content(getResources().getString(R.string.laoding))
                     .progress(true, 0)
-                    .cancelable(true)
+                    .cancelable(false)
                     .typeface("Roboto-Light.ttf", "Roboto.ttf")
                     .theme(Theme.LIGHT)
                     .progressIndeterminateStyle(false)
@@ -203,7 +203,7 @@ public class FactureFragment extends Fragment {
 
         @Override
         protected void onPostExecute(FactureModel greeting1) {
-            if (isConnected.isStatus()) {
+            if (isConnected.isStatus() && (isConnected.getData().size() != 0)) {
                 dialog.dismiss();
 
 
@@ -240,7 +240,7 @@ public class FactureFragment extends Fragment {
                     tr.addView(b1);
 
 
-                    TextView a1 = generateTextView(String.valueOf(list.get(i).getMontant()), layoutParams);
+                    TextView a1 = generateTextView(String.format("%.3f", list.get(i).getMontant()), layoutParams);
                     a1.setBackgroundColor(Color.parseColor("#582c7e"));
                     a1.setTextColor(Color.WHITE);
                     a1.setTextSize(14);
@@ -253,7 +253,7 @@ public class FactureFragment extends Fragment {
                     tl.addView(tr, layoutParams);
 
                 }
-                totale.setText(Float.toString(tot) + " DT");
+                totale.setText(String.format("%.3f", tot) + " TND");
 
 
             } else
