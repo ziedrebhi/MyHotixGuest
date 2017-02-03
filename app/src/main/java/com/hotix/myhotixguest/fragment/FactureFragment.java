@@ -129,6 +129,7 @@ public class FactureFragment extends Fragment {
         Chambre = UserInfoModel.getInstance().getRoom();
 
         tl.removeAllViewsInLayout();
+        tl = (TableLayout) getView().findViewById(R.id.table1);
         if (isConnected())
             new HttpRequestTask().execute();
         else {
