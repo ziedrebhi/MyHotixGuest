@@ -2,6 +2,8 @@ package com.hotix.myhotixguest.fragment;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,6 +27,7 @@ import com.daimajia.slider.library.Tricks.ViewPagerEx;
 import com.hotix.myhotixguest.R;
 import com.hotix.myhotixguest.entities.ItemRestaurantModel;
 import com.hotix.myhotixguest.entities.RestaurantModel;
+import com.hotix.myhotixguest.entities.UserInfoModel;
 import com.hotix.myhotixguest.updater.RestaurantsViewAdapter;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -205,7 +208,12 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
                 Log.i(LOG_TAG, " Clicked on Item " + position);
             }
         });
-        new HttpRequestTask().execute();
+
+        if (isConnected())
+            new HttpRequestTask().execute();
+        else {
+            ShowDialogMaterialConnection();
+        }
     }
 
     private ArrayList<ItemRestaurantModel> getDataSet(RestaurantModel model) {
@@ -217,7 +225,7 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
     }
 
     public String getURL() {
-        return "http://41.228.14.111/HNGAPI/api/myhotixguest/GetRestaurants";
+        return UserInfoModel.getInstance().getURL() + "GetRestaurants";
     }
 
     public void ShowDialogMaterial(boolean isOk) {
@@ -239,6 +247,28 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
             dialog = msgConnecting.build();
             dialog.show();
         }
+    }
+
+    public void ShowDialogMaterialConnection() {
+        MaterialDialog.Builder msgConnecting = new MaterialDialog.Builder(getActivity());
+
+        msgConnecting.content(getResources().getString(R.string.laoding_error))
+                .typeface("Roboto-Light.ttf", "Roboto.ttf")
+                .theme(Theme.LIGHT)
+                .positiveText(getResources().getString(R.string.ressayer));
+        MaterialDialog dialog = msgConnecting.build();
+        dialog.show();
+
+    }
+
+    public boolean isConnected() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        }
+        return false;
     }
 
     /**

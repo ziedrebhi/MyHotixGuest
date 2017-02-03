@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     public String getURL() {
-        return "http://41.228.14.111/HNGAPI/api/myhotixguest/Authentifier";
+        return UserInfoModel.getInstance().getURL() + "Authentifier";
     }
 
     public boolean isConnected() {
@@ -117,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
             msgConnecting.content(getResources().getString(R.string.laoding_error))
                     .typeface("Roboto-Light.ttf", "Roboto.ttf")
                     .theme(Theme.LIGHT)
-                    .positiveText("Ok");
+                    .positiveText(getResources().getString(R.string.ressayer));
             dialog = msgConnecting.build();
             dialog.show();
         }
@@ -129,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
         msgConnecting.content(getResources().getString(R.string.laoding_error))
                 .typeface("Roboto-Light.ttf", "Roboto.ttf")
                 .theme(Theme.LIGHT)
-                .positiveText("Ok");
+                .positiveText(getResources().getString(R.string.ressayer));
         MaterialDialog dialog = msgConnecting.build();
         dialog.show();
 
@@ -171,6 +171,7 @@ public class LoginActivity extends AppCompatActivity {
                 dialog.dismiss();
                 ShowDialogMaterial(false);
             }
+            ShowDialogMaterial(true);
         }
 
         @Override

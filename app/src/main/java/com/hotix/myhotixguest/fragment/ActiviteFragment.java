@@ -2,6 +2,8 @@ package com.hotix.myhotixguest.fragment;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,6 +27,7 @@ import com.daimajia.slider.library.Tricks.ViewPagerEx;
 import com.hotix.myhotixguest.R;
 import com.hotix.myhotixguest.entities.ActiviteModel;
 import com.hotix.myhotixguest.entities.ItemActiviteModel;
+import com.hotix.myhotixguest.entities.UserInfoModel;
 import com.hotix.myhotixguest.updater.ActivitesViewAdapter;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -170,7 +173,11 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
                 Log.i("RestaurantsFragments", " Clicked on Item " + position);
             }
         });
-        new HttpRequestTask().execute();
+        if (isConnected())
+            new HttpRequestTask().execute();
+        else {
+            ShowDialogMaterialConnection();
+        }
     }
 
     private ArrayList<ItemActiviteModel> getDataSet(ActiviteModel model) {
@@ -219,7 +226,29 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
     }
 
     public String getURL() {
-        return "http://41.228.14.111/HNGAPI/api/myhotixguest/GetActivites";
+        return UserInfoModel.getInstance().getURL() + "GetActivites";
+    }
+
+    public boolean isConnected() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        }
+        return false;
+    }
+
+    public void ShowDialogMaterialConnection() {
+        MaterialDialog.Builder msgConnecting = new MaterialDialog.Builder(getActivity());
+
+        msgConnecting.content(getResources().getString(R.string.laoding_error))
+                .typeface("Roboto-Light.ttf", "Roboto.ttf")
+                .theme(Theme.LIGHT)
+                .positiveText(getResources().getString(R.string.ressayer));
+        MaterialDialog dialog = msgConnecting.build();
+        dialog.show();
+
     }
 
     public void ShowDialogMaterial(boolean isOk) {
@@ -237,11 +266,12 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
             msgConnecting.content(getResources().getString(R.string.laoding_error))
                     .typeface("Roboto-Light.ttf", "Roboto.ttf")
                     .theme(Theme.LIGHT)
-                    .positiveText("Ok");
+                    .positiveText(getResources().getString(R.string.ressayer));
             dialog = msgConnecting.build();
             dialog.show();
         }
     }
+
 
     /**
      * This interface must be implemented by activities that contain this

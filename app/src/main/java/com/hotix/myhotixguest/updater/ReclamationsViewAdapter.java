@@ -52,7 +52,7 @@ public class ReclamationsViewAdapter extends RecyclerView
         holder.objet.setText(context.getResources().getString(R.string.object) + String.valueOf(mDataset.get(position).getObject()));
         holder.date.setText(context.getResources().getString(R.string.date_decl) + mDataset.get(position).getDateCreation());
         if (mDataset.get(position).isTraite()) {
-            holder.card.setBackgroundResource(R.color.colorPrimaryLeger);
+            holder.card.setBackgroundResource(R.color.radial_gray_light);
         }
 
     }

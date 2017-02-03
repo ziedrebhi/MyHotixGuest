@@ -17,7 +17,7 @@
         android:layout_weight="1">
 
         <EditText
-            android:id="@+id/dateDep"
+            android:id="@+id/obj"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -32,12 +32,13 @@
         android:layout_weight="1">
 
         <EditText
-            android:id="@+id/dateArr"
+            android:id="@+id/rec"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_height="222dp"
+            android:gravity="top|left"
             android:hint="@string/nav_details"
-            android:inputType="text"
-            android:lines="4" />
+            android:inputType="textMultiLine"
+            android:lines="8"
+            android:scrollbars="vertical"></EditText>
     </android.support.design.widget.TextInputLayout>
 </LinearLayout>

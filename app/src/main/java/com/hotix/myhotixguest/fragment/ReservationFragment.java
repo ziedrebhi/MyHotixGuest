@@ -1,6 +1,8 @@
 package com.hotix.myhotixguest.fragment;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -206,7 +208,17 @@ public class ReservationFragment extends Fragment {
     }
 
     private String[] GetListEnfants() {
-        return new String[]{"1 Enfant", "2 Enfants", "3 Enfants", "4 Enfants"};
+        return new String[]{"0 Enfant", "1 Enfant", "2 Enfants", "3 Enfants", "4 Enfants"};
+    }
+
+    public boolean isConnected() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        }
+        return false;
     }
 
     /**

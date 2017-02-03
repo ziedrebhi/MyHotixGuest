@@ -50,7 +50,7 @@ public class UsersViewAdapter extends RecyclerView
         holder.Name.setText(mDataset.get(position).getName());
         holder.Qualite.setText(mDataset.get(position).getQualite());
         if (mDataset.get(position).isMaster()) {
-            holder.card.setBackgroundResource(R.color.colorPrimaryLeger);
+            holder.card.setBackgroundResource(R.color.radial_gray_light);
         }
     }
 

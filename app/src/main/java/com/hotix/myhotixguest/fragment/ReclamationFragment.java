@@ -1,27 +1,34 @@
 package com.hotix.myhotixguest.fragment;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.StackingBehavior;
 import com.afollestad.materialdialogs.Theme;
 import com.hotix.myhotixguest.R;
 import com.hotix.myhotixguest.entities.ItemReclamationModel;
 import com.hotix.myhotixguest.entities.ReclamationModel;
+import com.hotix.myhotixguest.entities.ResponseModel;
 import com.hotix.myhotixguest.entities.UserInfoModel;
 import com.hotix.myhotixguest.updater.ReclamationsViewAdapter;
 
@@ -48,6 +55,8 @@ public class ReclamationFragment extends Fragment {
     MaterialDialog dialog;
     TextView msgEmpty;
     boolean wrapInScrollView;
+    EditText object, value;
+    MaterialDialog dialog2;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -56,7 +65,9 @@ public class ReclamationFragment extends Fragment {
     private RecyclerView.LayoutManager mLayoutManager;
     private OnFragmentInteractionListener mListener;
     private FloatingActionButton fab;
-
+    private View positiveAction;
+    private String ObjetReclamation;
+    private String DetailsReclamation;
     public ReclamationFragment() {
         // Required empty public constructor
     }
@@ -112,17 +123,30 @@ public class ReclamationFragment extends Fragment {
                /* Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();*/
                 final View view2 = view;
-                new MaterialDialog.Builder(getActivity())
+
+                MaterialDialog.Builder dialogM = new MaterialDialog.Builder(getActivity())
+                        .title(R.string.reclamation)
+                        .iconRes(R.mipmap.ic_announcement_black_24dp)
+                        .limitIconToDefaultSize()
                         .customView(R.layout.reclamation_custom_view, wrapInScrollView)
-                        .typeface("Roboto-Light.ttf", "Roboto.ttf")
-                        .negativeText(R.string.picker_cancel)
+                        .typeface("Roboto.ttf", "Roboto.ttf")
+                        .btnStackedGravity(GravityEnum.END)
+                        .stackingBehavior(StackingBehavior.ALWAYS)
+                        .negativeText(R.string.cancel)
                         .positiveText(R.string.submit)
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 // TODO
-                                Snackbar.make(view2, "Replace with your own action", Snackbar.LENGTH_LONG)
-                                        .setAction("Action", null).show();
+                                if (isEmpty()) {
+                                    if (isConnected()) {
+                                        ObjetReclamation = object.getText().toString();
+                                        DetailsReclamation = value.getText().toString();
+                                        new HttpRequestTaskSend().execute();
+                                    } else {
+                                        ShowDialogMaterialConnection();
+                                    }
+                                }
 
 
                             }
@@ -133,10 +157,83 @@ public class ReclamationFragment extends Fragment {
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 // TODO
                             }
-                        }).show();
+                        });
+                dialog2 = dialogM.build();
+                object = (EditText) dialog2.getCustomView().findViewById(R.id.obj);
+                value = (EditText) dialog2.getCustomView().findViewById(R.id.rec);
+                positiveAction = dialog2.getActionButton(DialogAction.POSITIVE);
+
+                object.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
+                        if (s.toString().trim().length() == 0) {
+                            object.setError(getResources().getString(R.string.obl));
+                        }
+                        if (isEmpty())
+                            positiveAction.setEnabled(true);
+                        else {
+                            positiveAction.setEnabled(false);
+                        }
+
+                    }
+                });
+                value.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if (s.toString().trim().length() == 0) {
+                            value.setError(getResources().getString(R.string.obl));
+                        }
+                        if (isEmpty())
+                            positiveAction.setEnabled(true);
+                        else {
+                            positiveAction.setEnabled(false);
+                        }
+                    }
+                });
+                positiveAction.setEnabled(false);
+                dialog2.show();
+
             }
         });
         return view;
+    }
+
+    public boolean isEmpty() {
+
+        if ((object.getText().toString().isEmpty()) && (value.getText().toString().isEmpty())) {
+            object.setError("Obligatoire");
+            value.setError("Obligatoire");
+            Log.i("HotixDev", "Both Empty");
+            return false;
+        } else if (object.getText().toString().isEmpty()) {
+            object.setError("Obligatoire");
+            Log.i("HotixDev", "password Empty");
+            return false;
+        } else if (value.getText().toString().isEmpty()) {
+            Log.i("HotixDev", "login Empty");
+            value.setError("Obligatoire");
+            return false;
+        }
+        return true;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -173,7 +270,11 @@ public class ReclamationFragment extends Fragment {
                 Log.i(LOG_TAG, " Clicked on Item " + position);
             }
         });
-        new HttpRequestTask().execute();
+        if (isConnected())
+            new HttpRequestTask().execute();
+        else {
+            ShowDialogMaterialConnection();
+        }
     }
 
     private ArrayList<ItemReclamationModel> getDataSet(ReclamationModel model) {
@@ -185,7 +286,11 @@ public class ReclamationFragment extends Fragment {
     }
 
     public String getURL() {
-        return "http://41.228.14.111/HNGAPI/api/myhotixguest/GetReclamations";
+        return UserInfoModel.getInstance().getURL() + "GetReclamations";
+    }
+
+    public String getURLSend() {
+        return UserInfoModel.getInstance().getURL() + "SendReclamation";
     }
 
     public void ShowDialogMaterial(boolean isOk) {
@@ -203,10 +308,32 @@ public class ReclamationFragment extends Fragment {
             msgConnecting.content(getResources().getString(R.string.laoding_error))
                     .typeface("Roboto-Light.ttf", "Roboto.ttf")
                     .theme(Theme.LIGHT)
-                    .positiveText("Ok");
+                    .positiveText(getResources().getString(R.string.ressayer));
             dialog = msgConnecting.build();
             dialog.show();
         }
+    }
+
+    public void ShowDialogMaterialConnection() {
+        MaterialDialog.Builder msgConnecting = new MaterialDialog.Builder(getActivity());
+
+        msgConnecting.content(getResources().getString(R.string.laoding_error))
+                .typeface("Roboto-Light.ttf", "Roboto.ttf")
+                .theme(Theme.LIGHT)
+                .positiveText(getResources().getString(R.string.ressayer));
+        MaterialDialog dialog = msgConnecting.build();
+        dialog.show();
+
+    }
+
+    public boolean isConnected() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -255,11 +382,13 @@ public class ReclamationFragment extends Fragment {
                 } else {
                     mAdapter = new ReclamationsViewAdapter(getDataSet(isConnected), getActivity());
                     mRecyclerView.setAdapter(mAdapter);
+                    msgEmpty.setVisibility(View.GONE);
                 }
             } else {
                 dialog.dismiss();
                 ShowDialogMaterial(false);
             }
+            ShowDialogMaterial(true);
         }
 
         @Override
@@ -269,4 +398,53 @@ public class ReclamationFragment extends Fragment {
         }
 
     }
+
+    private class HttpRequestTaskSend extends AsyncTask<Void, Void, ResponseModel> {
+        ResponseModel isConnected = null;
+
+        @Override
+        protected ResponseModel doInBackground(Void... params) {
+            try {
+                final String url = getURLSend() + "?hotelId=1&numChambre=" + UserInfoModel.getInstance().getRoom() + "&objectRec=" + ObjetReclamation
+                        + "&detail=" + DetailsReclamation;
+                ;
+                Log.i("HttpRequestTask", url.toString());
+                RestTemplate restTemplate = new RestTemplate();
+                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+                isConnected = restTemplate.getForObject(url, ResponseModel.class);
+                Log.i("HttpRequestTask", isConnected.toString());
+                return isConnected;
+            } catch (Exception e) {
+                Log.e("ReclamationFragment", e.getMessage(), e);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(ResponseModel greeting1) {
+            if (isConnected.isStatus()) {
+                dialog.dismiss();
+
+                ShowDialogMaterial(true);
+                if (isConnected())
+                    new HttpRequestTask().execute();
+                else {
+                    ShowDialogMaterialConnection();
+                }
+            } else {
+                dialog.dismiss();
+                ShowDialogMaterial(false);
+            }
+            // ShowDialogMaterial(true);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog.show();
+        }
+
+    }
+
 }
