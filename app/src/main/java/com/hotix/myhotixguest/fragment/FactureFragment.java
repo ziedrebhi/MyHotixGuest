@@ -128,8 +128,11 @@ public class FactureFragment extends Fragment {
         super.onResume();
         Chambre = UserInfoModel.getInstance().getRoom();
 
-        tl.removeAllViewsInLayout();
-        tl = (TableLayout) getView().findViewById(R.id.table1);
+        int count = tl.getChildCount();
+        Log.i("HotixDev 2", String.valueOf(count));
+        while (tl.getChildCount() > 1)
+            tl.removeView(tl.getChildAt(tl.getChildCount() - 1));
+
         if (isConnected())
             new HttpRequestTask().execute();
         else {
