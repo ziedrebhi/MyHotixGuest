@@ -43,6 +43,7 @@
                 android:text="@string/chb_fact"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/colorPrimaryDark"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -52,6 +53,7 @@
                 android:paddingLeft="10dp"
                 android:text=""
                 android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -90,7 +92,9 @@
                             android:background="@drawable/fact_shape"
                             android:gravity="center"
                             android:padding="5dp"
-                            android:text="Date    " />
+
+                            android:text="Date    "
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/text"
@@ -99,7 +103,8 @@
                             android:background="@drawable/fact_shape"
                             android:gravity="center"
                             android:padding="5dp"
-                            android:text="@string/designation" />
+                            android:text="@string/designation"
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/commentfact"
@@ -108,7 +113,8 @@
                             android:background="@drawable/fact_shape"
                             android:gravity="center"
                             android:padding="5dp"
-                            android:text="@string/commentaire" />
+                            android:text="@string/commentaire"
+                            android:textSize="16sp" />
 
                         <TextView
                             android:id="@+id/montfact"
@@ -118,7 +124,8 @@
                             android:gravity="center"
                             android:padding="5dp"
                             android:text="@string/montant"
-                            android:textColor="@color/colorWhite" />
+                            android:textColor="@color/colorWhite"
+                            android:textSize="16sp" />
                     </TableRow>
                 </TableLayout>
             </LinearLayout>

@@ -24,7 +24,8 @@ import java.util.Map;
         "Master",
         "Produit",
         "Qualite",
-        "Arrangement"
+        "Arrangement",
+        "Devise"
 })
 public class ItemLoginModel implements Serializable {
 
@@ -43,6 +44,8 @@ public class ItemLoginModel implements Serializable {
     private String qualite;
     @JsonProperty("Arrangement")
     private String arrangement;
+    @JsonProperty("Devise")
+    private String devise;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -55,13 +58,14 @@ public class ItemLoginModel implements Serializable {
     /**
      * @param produit
      * @param arrangement
+     * @param devise
      * @param dateDepart
      * @param name
      * @param qualite
      * @param dateArrivee
      * @param master
      */
-    public ItemLoginModel(String name, String dateArrivee, String dateDepart, boolean master, String produit, String qualite, String arrangement) {
+    public ItemLoginModel(String name, String dateArrivee, String dateDepart, boolean master, String produit, String qualite, String arrangement, String devise) {
         super();
         this.name = name;
         this.dateArrivee = dateArrivee;
@@ -70,6 +74,7 @@ public class ItemLoginModel implements Serializable {
         this.produit = produit;
         this.qualite = qualite;
         this.arrangement = arrangement;
+        this.devise = devise;
     }
 
     @JsonProperty("Name")
@@ -170,6 +175,16 @@ public class ItemLoginModel implements Serializable {
     @JsonProperty("Arrangement")
     public void setArrangement(String arrangement) {
         this.arrangement = arrangement;
+    }
+
+    @JsonProperty("Devise")
+    public String getDevise() {
+        return devise;
+    }
+
+    @JsonProperty("Devise")
+    public void setDevise(String devise) {
+        this.devise = devise;
     }
 
     public ItemLoginModel withArrangement(String arrangement) {

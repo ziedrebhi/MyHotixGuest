@@ -35,7 +35,8 @@
             android:gravity="center"
             android:text="@string/pas_reclamation"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/colorPrimary"
+            android:textSize="20sp" />
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton

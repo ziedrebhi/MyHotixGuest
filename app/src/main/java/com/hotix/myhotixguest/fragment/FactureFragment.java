@@ -144,7 +144,7 @@ public class FactureFragment extends Fragment {
         MaterialDialog.Builder msgConnecting = new MaterialDialog.Builder(getActivity());
 
         msgConnecting.content(getResources().getString(R.string.laoding_error))
-                .typeface("Roboto-Light.ttf", "Roboto.ttf")
+
                 .theme(Theme.LIGHT)
                 .positiveText(getResources().getString(R.string.ressayer));
         MaterialDialog dialog = msgConnecting.build();
@@ -174,14 +174,14 @@ public class FactureFragment extends Fragment {
             msgConnecting.content(getResources().getString(R.string.laoding))
                     .progress(true, 0)
                     .cancelable(false)
-                    .typeface("Roboto-Light.ttf", "Roboto.ttf")
+
                     .theme(Theme.LIGHT)
                     .progressIndeterminateStyle(false)
                     .autoDismiss(false);
             dialog = msgConnecting.build();
         } else {
             msgConnecting.content(getResources().getString(R.string.laoding_error))
-                    .typeface("Roboto-Light.ttf", "Roboto.ttf")
+
                     .theme(Theme.LIGHT)
                     .positiveText(getResources().getString(R.string.ressayer));
             dialog = msgConnecting.build();
@@ -254,13 +254,13 @@ public class FactureFragment extends Fragment {
 
                     TextView t = generateTextView(list.get(i).getDateFacturation(), layoutParams);
                     t.setBackgroundResource(android.R.color.white);
-                    t.setTextSize(12);
+                    t.setTextSize(16);
                     t.setBackgroundResource(R.drawable.fact_shape);
                     tr.addView(t);
 
 
                     TextView a = generateTextView(list.get(i).getDesignation(), layoutParams);
-                    a.setTextSize(12);
+                    a.setTextSize(16);
                     a.setBackgroundResource(R.drawable.fact_shape);
                     tr.addView(a);
 
@@ -270,14 +270,14 @@ public class FactureFragment extends Fragment {
                     //b1.setElegantTextHeight(true);
                     b1.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
                     b1.setSingleLine(false);
-                    b1.setTextSize(14);
+                    b1.setTextSize(16);
                     tr.addView(b1);
 
 
                     TextView a1 = generateTextView(String.format("%.3f", list.get(i).getMontant()), layoutParams);
                     a1.setBackgroundColor(Color.parseColor("#582c7e"));
                     a1.setTextColor(Color.WHITE);
-                    a1.setTextSize(14);
+                    a1.setTextSize(16);
                     tr.addView(a1);
 
 
@@ -287,7 +287,7 @@ public class FactureFragment extends Fragment {
                     tl.addView(tr, layoutParams);
 
                 }
-                totale.setText(String.format("%.3f", tot) + " TND");
+                totale.setText(String.format("%.3f", tot) + " " + UserInfoModel.getInstance().getDEVISE());
 
 
             } else

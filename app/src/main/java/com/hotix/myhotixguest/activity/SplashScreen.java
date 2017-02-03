@@ -1,8 +1,11 @@
 package com.hotix.myhotixguest.activity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +17,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.hotix.myhotixguest.R;
 import com.hotix.myhotixguest.entities.UserInfoModel;
 import com.hotix.myhotixguest.other.UpdateChecker;
@@ -86,18 +91,35 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     public boolean CheckVersionApp() {
+
         boolean lastVersion = true;
-        String serveur = UserInfoModel.getInstance().getSERVER();
-        if (!serveur.equals("")) {
-            checker.checkForUpdateByVersionCode(serveur + "/Android/MyHotixGuest.txt");
+        if (isConnected()) {
+            String serveur = UserInfoModel.getInstance().getSERVER();
+            if (!serveur.equals("")) {
+                checker.checkForUpdateByVersionCode(serveur + "/Android/MyHotixGuest.txt");
 
-            if (checker.isUpdateAvailable()) {
-                Log.i("Update", "True");
-                lastVersion = false;
+                if (checker.isUpdateAvailable()) {
+                    Log.i("Update", "True");
+                    lastVersion = false;
 
+                }
             }
+        } else {
+            ShowDialogMaterialConnection();
         }
         return lastVersion;
+    }
+
+    public void ShowDialogMaterialConnection() {
+        MaterialDialog.Builder msgConnecting = new MaterialDialog.Builder(SplashScreen.this);
+
+        msgConnecting.content(getResources().getString(R.string.laoding_error))
+
+                .theme(Theme.LIGHT)
+                .positiveText(getResources().getString(R.string.ressayer));
+        MaterialDialog dialog = msgConnecting.build();
+        dialog.show();
+
     }
 
     public void DownloadAndInstallLastVersion() {
@@ -106,4 +128,15 @@ public class SplashScreen extends AppCompatActivity {
             checker.downloadAndInstall(serveur + "/Android/MyHotixGuest.apk");
         }
     }
+
+    public boolean isConnected() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        }
+        return false;
+    }
+
 }

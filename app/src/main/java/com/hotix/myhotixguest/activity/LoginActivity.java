@@ -108,14 +108,14 @@ public class LoginActivity extends AppCompatActivity {
             msgConnecting.content(getResources().getString(R.string.laoding))
                     .progress(true, 0)
                     .cancelable(false)
-                    .typeface("Roboto-Light.ttf", "Roboto.ttf")
+
                     .theme(Theme.LIGHT)
                     .progressIndeterminateStyle(false)
                     .autoDismiss(false);
             dialog = msgConnecting.build();
         } else {
             msgConnecting.content(getResources().getString(R.string.laoding_error))
-                    .typeface("Roboto-Light.ttf", "Roboto.ttf")
+
                     .theme(Theme.LIGHT)
                     .positiveText(getResources().getString(R.string.ressayer));
             dialog = msgConnecting.build();
@@ -164,6 +164,7 @@ public class LoginActivity extends AppCompatActivity {
                 dialog.dismiss();
                 UserInfoModel.getInstance().setRoom(chambre);
                 UserInfoModel.getInstance().setUsers(isConnected);
+                UserInfoModel.getInstance().setDEVISE(isConnected.getData().get(0).getDevise().toString());
                 Intent main = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(main);
                 finish();

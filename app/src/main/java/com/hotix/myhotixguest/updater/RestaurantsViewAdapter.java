@@ -66,6 +66,10 @@ public class RestaurantsViewAdapter extends RecyclerView
         return mDataset.size();
     }
 
+    public ItemRestaurantModel getItem(int position) {
+        return mDataset.get(position);
+    }
+
     public interface MyClickListener {
         public void onItemClick(int position, View v);
     }

@@ -243,7 +243,7 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
         MaterialDialog.Builder msgConnecting = new MaterialDialog.Builder(getActivity());
 
         msgConnecting.content(getResources().getString(R.string.laoding_error))
-                .typeface("Roboto-Light.ttf", "Roboto.ttf")
+
                 .theme(Theme.LIGHT)
                 .positiveText(getResources().getString(R.string.ressayer));
         MaterialDialog dialog = msgConnecting.build();
@@ -257,14 +257,14 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
             msgConnecting.content(getResources().getString(R.string.laoding))
                     .progress(true, 0)
                     .cancelable(false)
-                    .typeface("Roboto-Light.ttf", "Roboto.ttf")
+
                     .theme(Theme.LIGHT)
                     .progressIndeterminateStyle(false)
                     .autoDismiss(false);
             dialog = msgConnecting.build();
         } else {
             msgConnecting.content(getResources().getString(R.string.laoding_error))
-                    .typeface("Roboto-Light.ttf", "Roboto.ttf")
+
                     .theme(Theme.LIGHT)
                     .positiveText(getResources().getString(R.string.ressayer));
             dialog = msgConnecting.build();

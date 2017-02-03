@@ -129,7 +129,7 @@ public class ReclamationFragment extends Fragment {
                         .iconRes(R.mipmap.ic_announcement_black_24dp)
                         .limitIconToDefaultSize()
                         .customView(R.layout.reclamation_custom_view, wrapInScrollView)
-                        .typeface("Roboto.ttf", "Roboto.ttf")
+
                         .btnStackedGravity(GravityEnum.END)
                         .stackingBehavior(StackingBehavior.ALWAYS)
                         .negativeText(R.string.cancel)
@@ -299,14 +299,14 @@ public class ReclamationFragment extends Fragment {
             msgConnecting.content(getResources().getString(R.string.laoding))
                     .progress(true, 0)
                     .cancelable(false)
-                    .typeface("Roboto-Light.ttf", "Roboto.ttf")
+
                     .theme(Theme.LIGHT)
                     .progressIndeterminateStyle(false)
                     .autoDismiss(false);
             dialog = msgConnecting.build();
         } else {
             msgConnecting.content(getResources().getString(R.string.laoding_error))
-                    .typeface("Roboto-Light.ttf", "Roboto.ttf")
+
                     .theme(Theme.LIGHT)
                     .positiveText(getResources().getString(R.string.ressayer));
             dialog = msgConnecting.build();
@@ -318,7 +318,7 @@ public class ReclamationFragment extends Fragment {
         MaterialDialog.Builder msgConnecting = new MaterialDialog.Builder(getActivity());
 
         msgConnecting.content(getResources().getString(R.string.laoding_error))
-                .typeface("Roboto-Light.ttf", "Roboto.ttf")
+
                 .theme(Theme.LIGHT)
                 .positiveText(getResources().getString(R.string.ressayer));
         MaterialDialog dialog = msgConnecting.build();

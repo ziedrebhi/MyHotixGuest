@@ -7,18 +7,27 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.StackingBehavior;
 import com.afollestad.materialdialogs.Theme;
+import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
+import com.codetroopers.betterpickers.radialtimepicker.RadialTimePickerDialogFragment;
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
@@ -29,11 +38,13 @@ import com.hotix.myhotixguest.entities.ItemRestaurantModel;
 import com.hotix.myhotixguest.entities.RestaurantModel;
 import com.hotix.myhotixguest.entities.UserInfoModel;
 import com.hotix.myhotixguest.updater.RestaurantsViewAdapter;
+import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 /**
@@ -49,10 +60,16 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String FRAG_TAG_DATE_PICKER = "fragment_date_picker_name";
+    private static final String FRAG_TAG_DATE_PICKER2 = "fragment_date_picker_name2";
     private static String LOG_TAG = "RestaurantsFragment";
     MaterialDialog.Builder msgConnecting;
     MaterialDialog dialog;
     TextView msgEmpty;
+    Boolean wrapInScrollView = true;
+    MaterialDialog dialog2;
+    EditText date, heure, comment, pour;
+    MaterialBetterSpinner pax;
     private SliderLayout mDemoSlider;
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -61,6 +78,8 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private OnFragmentInteractionListener mListener;
+    private View positiveAction;
+    private String txtDate, txtHeure, txtPour, txtDetails, txtPax;
 
     public RestaurantsFragment() {
         // Required empty public constructor
@@ -201,11 +220,108 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
     @Override
     public void onResume() {
         super.onResume();
+
         ((RestaurantsViewAdapter) mAdapter).setOnItemClickListener(new RestaurantsViewAdapter
                 .MyClickListener() {
             @Override
             public void onItemClick(int position, View v) {
-                Log.i(LOG_TAG, " Clicked on Item " + position);
+                Log.i(LOG_TAG, " Clicked on Item " + ((RestaurantsViewAdapter) mAdapter).getItem(position).getNom());
+
+
+                MaterialDialog.Builder dialogM = new MaterialDialog.Builder(getActivity())
+                        .title(R.string.resa_rest)
+                        .iconRes(R.mipmap.ic_room_service_black_24dp)
+                        .limitIconToDefaultSize()
+                        .customView(R.layout.restaurant_custom_view, wrapInScrollView)
+
+                        .btnStackedGravity(GravityEnum.END)
+                        .stackingBehavior(StackingBehavior.ALWAYS)
+                        .negativeText(R.string.cancel)
+                        .positiveText(R.string.submit)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                // TODO
+
+
+                            }
+                        })
+
+                        .onNegative(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                // TODO
+                            }
+                        });
+                dialog2 = dialogM.build();
+
+                pour = (EditText) dialog2.getCustomView().findViewById(R.id.pour);
+                comment = (EditText) dialog2.getCustomView().findViewById(R.id.comment);
+                date = (EditText) dialog2.getCustomView().findViewById(R.id.date);
+                heure = (EditText) dialog2.getCustomView().findViewById(R.id.hour);
+                pour.setText(UserInfoModel.getInstance().getUsers().getData().get(0).getName().toString());
+                comment.setText("( Guest chambre : " + UserInfoModel.getInstance().getRoom().toString() + " )");
+                positiveAction = dialog2.getActionButton(DialogAction.POSITIVE);
+
+                date.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        final int DRAWABLE_LEFT = 0;
+
+                        if (event.getAction() == MotionEvent.ACTION_UP) {
+                            CalendarDatePickerDialogFragment cdp = new CalendarDatePickerDialogFragment()
+
+                                    .setOnDateSetListener(new CalendarDatePickerDialogFragment.OnDateSetListener() {
+                                        @Override
+                                        public void onDateSet(CalendarDatePickerDialogFragment dialog, int year, int monthOfYear, int dayOfMonth) {
+                                            Toast.makeText(getActivity(), "Date: " + year + " " + monthOfYear + 1 + " " + dayOfMonth, Toast.LENGTH_LONG).show();
+                                            txtDate = String.format("%02d", year) + String.format("%02d", monthOfYear + 1) + String.format("%02d", dayOfMonth);
+                                            date.setText(String.format("%02d", dayOfMonth) + "/" + String.format("%02d", monthOfYear + 1) + "/" + String.valueOf(year));
+                                        }
+                                    }).setFirstDayOfWeek(Calendar.MONDAY).setCancelText(getResources().getString(R.string.cancel));
+
+                            cdp.show(getChildFragmentManager(), FRAG_TAG_DATE_PICKER);
+                            return true;
+
+                        }
+                        return false;
+                    }
+                });
+
+                heure.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        final int DRAWABLE_LEFT = 0;
+
+                        if (event.getAction() == MotionEvent.ACTION_UP) {
+                            RadialTimePickerDialogFragment rtpd = new RadialTimePickerDialogFragment()
+                                    .setOnTimeSetListener(new RadialTimePickerDialogFragment.OnTimeSetListener() {
+                                        @Override
+                                        public void onTimeSet(RadialTimePickerDialogFragment dialog, int hourOfDay, int minute) {
+                                            Toast.makeText(getActivity(), "Hour: " + hourOfDay + ":" + minute, Toast.LENGTH_LONG).show();
+                                            heure.setText(String.valueOf(String.format("%02d", hourOfDay)) + ":" + String.format("%02d", minute));
+                                            txtHeure = txtDate + String.format("%02d", hourOfDay) + String.format("%02d", minute);
+
+                                        }
+                                    })
+                                    .setStartTime(10, 30).setCancelText(getResources().getString(R.string.cancel));
+
+
+                            rtpd.show(getChildFragmentManager(), FRAG_TAG_DATE_PICKER2);
+                            return true;
+
+                        }
+                        return false;
+                    }
+                });
+                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(),
+                        android.R.layout.simple_dropdown_item_1line, GetListEnfants());
+
+                pax = (MaterialBetterSpinner) dialog2.getCustomView().
+                        findViewById(R.id.pax);
+                pax.setAdapter(arrayAdapter);
+                pax.setSelection(0);
+                dialog2.show();
             }
         });
 
@@ -234,14 +350,14 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
             msgConnecting.content(getResources().getString(R.string.laoding))
                     .progress(true, 0)
                     .cancelable(false)
-                    .typeface("Roboto-Light.ttf", "Roboto.ttf")
+
                     .theme(Theme.LIGHT)
                     .progressIndeterminateStyle(false)
                     .autoDismiss(false);
             dialog = msgConnecting.build();
         } else {
             msgConnecting.content(getResources().getString(R.string.laoding_error))
-                    .typeface("Roboto-Light.ttf", "Roboto.ttf")
+
                     .theme(Theme.LIGHT)
                     .positiveText("Ok");
             dialog = msgConnecting.build();
@@ -253,12 +369,22 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
         MaterialDialog.Builder msgConnecting = new MaterialDialog.Builder(getActivity());
 
         msgConnecting.content(getResources().getString(R.string.laoding_error))
-                .typeface("Roboto-Light.ttf", "Roboto.ttf")
+
                 .theme(Theme.LIGHT)
                 .positiveText(getResources().getString(R.string.ressayer));
         MaterialDialog dialog = msgConnecting.build();
         dialog.show();
 
+    }
+
+    private String[] GetListEnfants() {
+        int nbrMax = UserInfoModel.getInstance().getUsers().getData().size();
+        String[] paxs = new String[nbrMax];
+        paxs[0] = "1 personne";
+        for (int i = 1; i < nbrMax; i++) {
+            paxs[i] = String.valueOf(i + 1) + " personnes";
+        }
+        return paxs;
     }
 
     public boolean isConnected() {

@@ -25,6 +25,7 @@
                 android:layout_alignParentTop="true"
                 android:text="Restaurant turc et moyen oriental, sur place et à emporter, Kebap Drive. Spécialités de cuisine turque, libanaise, grecque"
                 android:textColor="@color/colorPrimary"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -33,8 +34,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView"
                 android:layout_marginTop="10dp"
-
-                android:text="Restaurant turc et moyen oriental, sur place et à emporter, Kebap Drive. Spécialités de cuisine turque, libanaise, grecque" />
+                android:text="Restaurant turc et moyen oriental, sur place et à emporter, Kebap Drive. Spécialités de cuisine turque, libanaise, grecque"
+                android:textSize="18sp" />
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 

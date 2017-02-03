@@ -121,4 +121,10 @@
     <string name="arr">Arrangement</string>
     <string name="chbtype">Type Chambre</string>
     <string name="dispo">Voir</string>
+    <string name="comment">Commentaire :</string>
+    <string name="pour">Pour :</string>
+    <string name="nbr_pax">Nbr de Personnes :</string>
+    <string name="date_arr">Date :</string>
+    <string name="heure_arr">Heure  :</string>
+    <string name="resa_rest">Réservation restaurant :</string>
 </resources>

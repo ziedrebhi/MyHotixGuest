@@ -10,9 +10,17 @@ public class UserInfoModel {
     private String URL;
     private String SERVER;
     private LoginModel Users;
-
+    private String DEVISE;
     public static UserInfoModel getInstance() {
         return holder;
+    }
+
+    public String getDEVISE() {
+        return DEVISE;
+    }
+
+    public void setDEVISE(String DEVISE) {
+        this.DEVISE = DEVISE;
     }
 
     public String getSERVER() {
