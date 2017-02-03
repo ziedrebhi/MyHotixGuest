@@ -127,6 +127,8 @@ public class FactureFragment extends Fragment {
     public void onResume() {
         super.onResume();
         Chambre = UserInfoModel.getInstance().getRoom();
+
+        tl.removeAllViewsInLayout();
         if (isConnected())
             new HttpRequestTask().execute();
         else {
