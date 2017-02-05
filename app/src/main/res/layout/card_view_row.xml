@@ -3,7 +3,8 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:weightSum="1">
 
     <android.support.v7.widget.CardView
         android:id="@+id/card_view"
@@ -11,6 +12,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_margin="5dp"
+        android:layout_weight="10.17"
         card_view:cardCornerRadius="2dp"
         card_view:contentPadding="10dp">
 
@@ -20,23 +22,24 @@
 
             <TextView
                 android:id="@+id/textView"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:text="Restaurant turc et moyen oriental, sur place et à emporter, Kebap Drive. Spécialités de cuisine turque, libanaise, grecque"
                 android:textColor="@color/colorPrimary"
-                android:textSize="16sp"
+
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textView2"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textView"
                 android:layout_marginTop="10dp"
-                android:text="Restaurant turc et moyen oriental, sur place et à emporter, Kebap Drive. Spécialités de cuisine turque, libanaise, grecque"
-                android:textSize="18sp" />
+                android:text="Restaurant turc et moyen oriental, sur place et à emporter, Kebap Drive. Spécialités de cuisine turque, libanaise, grecque" />
+
         </RelativeLayout>
+
     </android.support.v7.widget.CardView>
 
 

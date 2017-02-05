@@ -124,8 +124,7 @@
                 android:maxLines="1"
                 android:text="2016/10/12"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="#212121"
-                android:textSize="16sp" />
+                android:textColor="#212121" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -138,8 +137,7 @@
                 android:layout_toRightOf="@id/ivContactItem3"
                 android:text="Date Arrivée"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="#727272"
-                android:textSize="16sp" />
+                android:textColor="#727272" />
             <!--
                                 <ToggleButton
                                     android:id="@+id/chkState3"
@@ -189,8 +187,7 @@
                 android:maxLines="1"
                 android:text="2016/10/23"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="#212121"
-                android:textSize="16sp" />
+                android:textColor="#212121" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -203,8 +200,7 @@
                 android:layout_toRightOf="@id/ivContactItem4"
                 android:text="Date Départ"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="#727272"
-                android:textSize="16sp" />
+                android:textColor="#727272" />
             <!--
                                 <ToggleButton
                                     android:id="@+id/chkState4"
@@ -254,8 +250,7 @@
                 android:maxLines="1"
                 android:text="Sweet Junior"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="#212121"
-                android:textSize="16sp" />
+                android:textColor="#212121" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -268,8 +263,7 @@
                 android:layout_toRightOf="@id/ivContactItem5"
                 android:text="Type Chambre"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="#727272"
-                android:textSize="16sp" />
+                android:textColor="#727272" />
             <!--
                         <ToggleButton
                             android:id="@+id/chkState5"
@@ -319,8 +313,7 @@
                 android:maxLines="1"
                 android:text="221B Baker Street, England"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="#212121"
-                android:textSize="16sp" />
+                android:textColor="#212121" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -333,8 +326,7 @@
                 android:layout_toRightOf="@id/ivContactItem6"
                 android:text="Arrangement"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="#727272"
-                android:textSize="16sp" />
+                android:textColor="#727272" />
             <!--
                         <ToggleButton
                             android:id="@+id/chkState6"

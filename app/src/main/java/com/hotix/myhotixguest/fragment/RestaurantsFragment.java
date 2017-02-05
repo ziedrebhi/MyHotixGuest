@@ -11,11 +11,14 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -27,6 +30,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.StackingBehavior;
 import com.afollestad.materialdialogs.Theme;
 import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
+import com.codetroopers.betterpickers.calendardatepicker.MonthAdapter;
 import com.codetroopers.betterpickers.radialtimepicker.RadialTimePickerDialogFragment;
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
@@ -35,14 +39,17 @@ import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
 import com.hotix.myhotixguest.R;
 import com.hotix.myhotixguest.entities.ItemRestaurantModel;
+import com.hotix.myhotixguest.entities.ResponseModel;
 import com.hotix.myhotixguest.entities.RestaurantModel;
 import com.hotix.myhotixguest.entities.UserInfoModel;
+import com.hotix.myhotixguest.other.Utils;
 import com.hotix.myhotixguest.updater.RestaurantsViewAdapter;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -70,6 +77,8 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
     MaterialDialog dialog2;
     EditText date, heure, comment, pour;
     MaterialBetterSpinner pax;
+    Utils utils;
+    long restauId;
     private SliderLayout mDemoSlider;
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -227,7 +236,7 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
             public void onItemClick(int position, View v) {
                 Log.i(LOG_TAG, " Clicked on Item " + ((RestaurantsViewAdapter) mAdapter).getItem(position).getNom());
 
-
+                restauId = ((RestaurantsViewAdapter) mAdapter).getItem(position).getId();
                 MaterialDialog.Builder dialogM = new MaterialDialog.Builder(getActivity())
                         .title(R.string.resa_rest)
                         .iconRes(R.mipmap.ic_room_service_black_24dp)
@@ -242,7 +251,12 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 // TODO
+                                if (isConnected()) {
 
+                                    new HttpRequestTaskSend().execute();
+                                } else {
+                                    ShowDialogMaterialConnection();
+                                }
 
                             }
                         })
@@ -259,26 +273,40 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
                 comment = (EditText) dialog2.getCustomView().findViewById(R.id.comment);
                 date = (EditText) dialog2.getCustomView().findViewById(R.id.date);
                 heure = (EditText) dialog2.getCustomView().findViewById(R.id.hour);
+
+
                 pour.setText(UserInfoModel.getInstance().getUsers().getData().get(0).getName().toString());
                 comment.setText("( Guest chambre : " + UserInfoModel.getInstance().getRoom().toString() + " )");
-                positiveAction = dialog2.getActionButton(DialogAction.POSITIVE);
 
+                txtPour = pour.getText().toString();
+                txtDetails = comment.getText().toString();
+
+                positiveAction = dialog2.getActionButton(DialogAction.POSITIVE);
+                try {
+                    utils = new Utils();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 date.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
                         final int DRAWABLE_LEFT = 0;
-
+                        Log.i("ZIED", UserInfoModel.getInstance().getUsers().getData().get(0).getDateArrivee());
                         if (event.getAction() == MotionEvent.ACTION_UP) {
                             CalendarDatePickerDialogFragment cdp = new CalendarDatePickerDialogFragment()
 
                                     .setOnDateSetListener(new CalendarDatePickerDialogFragment.OnDateSetListener() {
                                         @Override
                                         public void onDateSet(CalendarDatePickerDialogFragment dialog, int year, int monthOfYear, int dayOfMonth) {
-                                            Toast.makeText(getActivity(), "Date: " + year + " " + monthOfYear + 1 + " " + dayOfMonth, Toast.LENGTH_LONG).show();
+                                            //    Toast.makeText(getActivity(), "Date: " + year + " " + monthOfYear + 1 + " " + dayOfMonth, Toast.LENGTH_LONG).show();
                                             txtDate = String.format("%02d", year) + String.format("%02d", monthOfYear + 1) + String.format("%02d", dayOfMonth);
                                             date.setText(String.format("%02d", dayOfMonth) + "/" + String.format("%02d", monthOfYear + 1) + "/" + String.valueOf(year));
                                         }
-                                    }).setFirstDayOfWeek(Calendar.MONDAY).setCancelText(getResources().getString(R.string.cancel));
+                                    }).setFirstDayOfWeek(Calendar.MONDAY)
+                                    .setCancelText(getResources().getString(R.string.cancel))
+                                    .setPreselectedDate(utils.getYEAR(), utils.getMONTH(), utils.getDAY())
+                                    .setDateRange(new MonthAdapter.CalendarDay(utils.getYEARarr(), utils.getMONTHarr(), utils.getDAYarr()),
+                                            new MonthAdapter.CalendarDay(utils.getYEARdep(), utils.getMONTHdep(), utils.getDAYdep()));
 
                             cdp.show(getChildFragmentManager(), FRAG_TAG_DATE_PICKER);
                             return true;
@@ -298,13 +326,15 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
                                     .setOnTimeSetListener(new RadialTimePickerDialogFragment.OnTimeSetListener() {
                                         @Override
                                         public void onTimeSet(RadialTimePickerDialogFragment dialog, int hourOfDay, int minute) {
-                                            Toast.makeText(getActivity(), "Hour: " + hourOfDay + ":" + minute, Toast.LENGTH_LONG).show();
-                                            heure.setText(String.valueOf(String.format("%02d", hourOfDay)) + ":" + String.format("%02d", minute));
+                                            // Toast.makeText(getActivity(), "Hour: " + hourOfDay + ":" + minute, Toast.LENGTH_LONG).show();
                                             txtHeure = txtDate + String.format("%02d", hourOfDay) + String.format("%02d", minute);
+
+                                            heure.setText(String.valueOf(String.format("%02d", hourOfDay)) + ":" + String.format("%02d", minute));
 
                                         }
                                     })
-                                    .setStartTime(10, 30).setCancelText(getResources().getString(R.string.cancel));
+                                    .setStartTime(utils.getHOUR(), utils.getMINUTE())
+                                    .setCancelText(getResources().getString(R.string.cancel));
 
 
                             rtpd.show(getChildFragmentManager(), FRAG_TAG_DATE_PICKER2);
@@ -320,7 +350,117 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
                 pax = (MaterialBetterSpinner) dialog2.getCustomView().
                         findViewById(R.id.pax);
                 pax.setAdapter(arrayAdapter);
-                pax.setSelection(0);
+                pax.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                        String mSelectedText = adapterView.getItemAtPosition(position).toString();
+
+                        int mSelectedId = position;
+                        txtPax = String.valueOf(mSelectedId);
+                    }
+                });
+
+                pour.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        txtPour = pour.getText().toString();
+                        if (txtPour.toString().trim().length() == 0) {
+                            pour.setError(getResources().getString(R.string.obl));
+                        }
+                        if (isEmpty())
+                            positiveAction.setEnabled(true);
+                        else {
+                            positiveAction.setEnabled(false);
+                        }
+                    }
+                });
+                heure.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        //txtHeure = heure.getText().toString();
+
+                        if (txtHeure.toString().trim().length() == 0) {
+                            heure.setError(getResources().getString(R.string.obl));
+                        }
+                        if (isEmpty())
+                            positiveAction.setEnabled(true);
+                        else {
+                            positiveAction.setEnabled(false);
+                        }
+                    }
+                });
+
+                date.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        // txtDate = date.getText().toString();
+                        if (txtDate.toString().trim().length() == 0) {
+                            date.setError(getResources().getString(R.string.obl));
+                        }
+                        if (isEmpty())
+                            positiveAction.setEnabled(true);
+                        else {
+                            positiveAction.setEnabled(false);
+                        }
+                    }
+                });
+
+                comment.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        txtDetails = comment.getText().toString();
+                        if (txtDetails.toString().trim().length() == 0) {
+                            comment.setError(getResources().getString(R.string.obl));
+                        }
+                        if (isEmpty())
+                            positiveAction.setEnabled(true);
+                        else {
+                            positiveAction.setEnabled(false);
+                        }
+                    }
+                });
+
+                positiveAction.setEnabled(false);
                 dialog2.show();
             }
         });
@@ -330,6 +470,45 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
         else {
             ShowDialogMaterialConnection();
         }
+    }
+
+    public boolean isEmpty() {
+
+        if ((pour.getText().toString().isEmpty())
+                && (comment.getText().toString().isEmpty())
+                && (date.getText().toString().isEmpty())
+                && (heure.getText().toString().isEmpty())
+                && (pax.getText().toString().isEmpty())
+                ) {
+            pour.setError("Obligatoire");
+            comment.setError("Obligatoire");
+            date.setError("Obligatoire");
+            heure.setError("Obligatoire");
+            pax.setError("Obligatoire");
+            Log.i("HotixDev", "Both Empty");
+            return false;
+        } else if (pour.getText().toString().isEmpty()) {
+            pour.setError("Obligatoire");
+            Log.i("HotixDev", "password Empty");
+            return false;
+        } else if (comment.getText().toString().isEmpty()) {
+            Log.i("HotixDev", "login Empty");
+            comment.setError("Obligatoire");
+            return false;
+        } else if (date.getText().toString().isEmpty()) {
+            Log.i("HotixDev", "login Empty");
+            date.setError("Obligatoire");
+            return false;
+        } else if (heure.getText().toString().isEmpty()) {
+            Log.i("HotixDev", "login Empty");
+            // heure.setError("Obligatoire");
+            return false;
+        } else if (pax.getText().toString().isEmpty()) {
+            Log.i("HotixDev", "login Empty");
+            pax.setError("Obligatoire");
+            return false;
+        }
+        return true;
     }
 
     private ArrayList<ItemRestaurantModel> getDataSet(RestaurantModel model) {
@@ -397,6 +576,10 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
         return false;
     }
 
+    public String getURLSend() {
+        return UserInfoModel.getInstance().getURL() + "ReserverRestaurant";
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -456,4 +639,60 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
         }
 
     }
+
+    private class HttpRequestTaskSend extends AsyncTask<Void, Void, ResponseModel> {
+        ResponseModel isConnected = null;
+
+        @Override
+        protected ResponseModel doInBackground(Void... params) {
+            try {
+                final String url = getURLSend() +
+                        "?NbrPAX=" + txtPax + 1 +
+                        "&DateArrivee=" + txtDate +
+                        "&HeureArrivee=" + txtHeure +
+                        "&Nom=" + txtPour +
+                        "&Prenom=." +
+                        "&NumTel=." +
+                        "&Commentaire=" + txtDetails +
+                        "&RestID=" + restauId;
+                ;
+                Log.i("HttpRequestTask", url.toString());
+                RestTemplate restTemplate = new RestTemplate();
+                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+                isConnected = restTemplate.getForObject(url, ResponseModel.class);
+                Log.i("HttpRequestTask", isConnected.toString());
+                return isConnected;
+            } catch (Exception e) {
+                Log.e("ReclamationFragment", e.getMessage(), e);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(ResponseModel greeting1) {
+            if (isConnected.isStatus()) {
+                dialog.dismiss();
+
+                ShowDialogMaterial(true);
+                if (isConnected())
+                    new HttpRequestTask().execute();
+                else {
+                    ShowDialogMaterialConnection();
+                }
+            } else {
+                dialog.dismiss();
+                ShowDialogMaterial(false);
+            }
+            // ShowDialogMaterial(true);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog.show();
+        }
+
+    }
+
 }

@@ -41,7 +41,7 @@
                 android:text="Zied Rebhi"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#212121"
-                android:textSize="18sp"
+
                 android:textStyle="bold" />
 
             <TextView
