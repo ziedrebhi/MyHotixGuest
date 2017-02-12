@@ -1,8 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/wallpaper1"
+    android:background="@mipmap/sultan"
     tools:context=".activity.LoginActivity">
 
     <View
@@ -14,6 +15,7 @@
         android:background="#000000" />
 
     <RelativeLayout
+        android:id="@+id/relativeLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -28,7 +30,8 @@
             android:layout_centerHorizontal="true"
             android:text="LOGIN"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            android:visibility="invisible" />
 
 
         <TextView
@@ -39,13 +42,8 @@
             android:layout_centerHorizontal="true"
             android:text="YOUR ACCOUNT"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#FFFFFF" />
-
-        <View
-            android:id="@+id/espase"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_below="@+id/textView3" />
+            android:textColor="#FFFFFF"
+            android:visibility="invisible" />
 
         <EditText
             android:id="@+id/login"
@@ -57,7 +55,7 @@
             android:layout_alignStart="@+id/textView3"
             android:layout_below="@+id/textView3"
             android:drawableLeft="@android:drawable/ic_lock_idle_charging"
-            android:hint="num_chb"
+            android:hint=" N° Chbr"
             android:inputType="number"
             android:textColor="@color/colorWhite"
             android:textColorHint="@color/colorHint" />
@@ -73,7 +71,7 @@
             android:layout_below="@+id/login"
             android:drawableLeft="@android:drawable/ic_lock_idle_lock"
             android:ems="10"
-            android:hint="num id"
+            android:hint=" N° Iden."
             android:inputType="textPassword"
 
             android:textColor="@color/colorWhite"
@@ -107,8 +105,16 @@
         android:layout_centerHorizontal="true"
         android:alpha="0.6"
         android:gravity="center_horizontal"
-        android:text="Hotel Demo | 2017"
+        android:text="Hôtel Le Sultan | 2017"
         android:textAlignment="center"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="#FFFFFF" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/relativeLayout2"
+        android:layout_alignParentTop="true"
+        app:srcCompat="@mipmap/logo" />
 </RelativeLayout>

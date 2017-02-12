@@ -52,14 +52,16 @@
 
 
         <RelativeLayout
+            android:id="@+id/lay"
             android:layout_width="match_parent"
+
             android:layout_height="0dip"
             android:layout_weight="50">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/list_activite"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:scrollbars="vertical" />
 
         </RelativeLayout>
@@ -68,9 +70,10 @@
         <TextView
             android:id="@+id/emptyMsg"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
 
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="30"
             android:drawableLeft="@mipmap/ic_happy"
             android:gravity="center"
             android:text="@string/pas_activ"

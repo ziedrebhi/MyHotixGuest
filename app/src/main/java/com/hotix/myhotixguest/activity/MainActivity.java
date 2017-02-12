@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -85,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
 
         // load toolbar titles from string resources
         activityTitles = getResources().getStringArray(R.array.nav_item_activity_titles);
-
 
 
         // load nav menu header data
@@ -281,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
                         navItemIndex = 7;
                         CURRENT_TAG = TAG_RESA;
                         break;
-                    case R.id.nav_about_us:
+                   /* case R.id.nav_about_us:
                         // launch new intent instead of loading fragment
                         startActivity(new Intent(MainActivity.this, AboutUsActivity.class));
                         drawer.closeDrawers();
@@ -290,7 +288,7 @@ public class MainActivity extends AppCompatActivity {
                         // launch new intent instead of loading fragment
                         startActivity(new Intent(MainActivity.this, PrivacyPolicyActivity.class));
                         drawer.closeDrawers();
-                        return true;
+                        return true;*/
                     default:
                         navItemIndex = 0;
                 }
@@ -380,7 +378,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if ((id == R.id.action_logout) || (id == R.id.action_logout2)) {
-            Toast.makeText(getApplicationContext(), "Logout user!", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), "Logout user!", Toast.LENGTH_LONG).show();
             Intent main = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(main);
             finish();
@@ -389,7 +387,7 @@ public class MainActivity extends AppCompatActivity {
 
         // user is in notifications fragment
         // and selected 'Mark all as Read'
-        if (id == R.id.action_mark_all_read) {
+       /* if (id == R.id.action_mark_all_read) {
             Toast.makeText(getApplicationContext(), "All notifications marked as read!", Toast.LENGTH_LONG).show();
         }
 
@@ -397,7 +395,7 @@ public class MainActivity extends AppCompatActivity {
         // and selected 'Clear All'
         if (id == R.id.action_clear_notifications) {
             Toast.makeText(getApplicationContext(), "Clear all notifications!", Toast.LENGTH_LONG).show();
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }

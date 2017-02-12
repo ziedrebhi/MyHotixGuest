@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +53,7 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
     MaterialDialog.Builder msgConnecting;
     MaterialDialog dialog;
     TextView msgEmpty;
+    RelativeLayout lay;
     private SliderLayout mDemoSlider;
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -98,6 +100,7 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
 
         View view = inflater.inflate(R.layout.fragment_activites, container, false);
         msgEmpty = (TextView) view.findViewById(R.id.emptyMsg);
+        lay = (RelativeLayout) view.findViewById(R.id.lay);
         msgEmpty.setVisibility(View.GONE);
 
         mDemoSlider = (SliderLayout) view.findViewById(R.id.slider);
@@ -318,10 +321,14 @@ public class ActiviteFragment extends Fragment implements BaseSliderView.OnSlide
                     mRecyclerView.setAdapter(mAdapter);
                 } else {
                     msgEmpty.setVisibility(View.VISIBLE);
+                    lay.setVisibility(View.GONE);
+
                 }
             } else {
                 dialog.dismiss();
-                ShowDialogMaterial(false);
+                //ShowDialogMaterial(false);
+                msgEmpty.setVisibility(View.VISIBLE);
+                lay.setVisibility(View.GONE);
             }
         }
 

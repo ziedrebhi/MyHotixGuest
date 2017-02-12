@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Gravity;
@@ -133,9 +134,9 @@ public class FactureFragment extends Fragment {
         while (tl.getChildCount() > 1)
             tl.removeView(tl.getChildAt(tl.getChildCount() - 1));
 
-        if (isConnected())
+        if (isConnected()) {
             new HttpRequestTask().execute();
-        else {
+        } else {
             ShowDialogMaterialConnection();
         }
     }
@@ -243,24 +244,26 @@ public class FactureFragment extends Fragment {
 
                 TableRow tr = null;
                 float tot = 0;
-                LayoutParams layoutParams = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+                LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 
                 Log.i("HttpRequestTask", String.valueOf(isConnected.getData().size()));
                 for (int i = 0; i < isConnected.getData().size(); i++) {
                     List<ItemFactureModel> list = isConnected.getData();
 
                     tr = new TableRow(getActivity());
-                    tr.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+                    tr.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 
                     TextView t = generateTextView(list.get(i).getDateFacturation(), layoutParams);
                     t.setBackgroundResource(android.R.color.white);
                     t.setTextSize(16);
+                    t.setPadding(4, 4, 4, 4);
                     t.setBackgroundResource(R.drawable.fact_shape);
                     tr.addView(t);
 
 
                     TextView a = generateTextView(list.get(i).getDesignation(), layoutParams);
                     a.setTextSize(16);
+                    a.setPadding(4, 4, 4, 4);
                     a.setBackgroundResource(R.drawable.fact_shape);
                     tr.addView(a);
 
@@ -270,6 +273,7 @@ public class FactureFragment extends Fragment {
                     //b1.setElegantTextHeight(true);
                     b1.setInputType(InputType.TYPE_TEXT_FLAG_MULTI_LINE);
                     b1.setSingleLine(false);
+                    b1.setPadding(4, 4, 4, 4);
                     b1.setTextSize(16);
                     tr.addView(b1);
 
@@ -278,6 +282,7 @@ public class FactureFragment extends Fragment {
                     a1.setBackgroundColor(Color.parseColor("#582c7e"));
                     a1.setTextColor(Color.WHITE);
                     a1.setTextSize(16);
+                    a1.setPadding(4, 4, 4, 4);
                     tr.addView(a1);
 
 
@@ -288,7 +293,7 @@ public class FactureFragment extends Fragment {
 
                 }
                 totale.setText(String.format("%.3f", tot) + " " + UserInfoModel.getInstance().getDEVISE());
-
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Total: " + String.format("%.3f", tot) + " " + UserInfoModel.getInstance().getDEVISE());
 
             } else
 

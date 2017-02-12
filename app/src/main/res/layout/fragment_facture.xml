@@ -59,31 +59,29 @@
         </LinearLayout>
 
         <ScrollView
-            android:id="@+id/scrollView1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="10dp"
-            android:layout_weight="1">
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="5dp">
+
+            <HorizontalScrollView
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent">
+
 
                 <TableLayout
                     android:id="@+id/table1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
+                    android:padding="5dp"
                     android:stretchColumns="*">
 
                     <TableRow
                         android:id="@+id/tableRow1"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center">
+                        android:layout_gravity="center"
+                        android:layout_weight="1">
 
                         <TextView
                             android:id="@+id/textView"
@@ -124,12 +122,13 @@
                             android:textColor="@color/colorWhite" />
                     </TableRow>
                 </TableLayout>
-            </LinearLayout>
+
+            </HorizontalScrollView>
         </ScrollView>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="60dp"
             android:background="@color/colorPrimaryDark"
             android:orientation="horizontal">
 

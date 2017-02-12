@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/wallpaper1"
+    android:background="@mipmap/sultan"
     tools:context=".activity.LoginActivity">
 
     <View
@@ -39,7 +39,8 @@
             android:layout_centerHorizontal="true"
             android:text="LOGIN"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            android:visibility="invisible" />
 
 
         <TextView
@@ -50,7 +51,8 @@
             android:layout_centerHorizontal="true"
             android:text="YOUR ACCOUNT"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            android:visibility="invisible" />
 
         <View
             android:id="@+id/espase"
@@ -119,7 +121,7 @@
         android:layout_centerHorizontal="true"
         android:alpha="0.6"
         android:gravity="center_horizontal"
-        android:text="Hotel Demo | 2017"
+        android:text="Hôtel Le Sultan | 2017"
         android:textAlignment="center"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="#FFFFFF" />

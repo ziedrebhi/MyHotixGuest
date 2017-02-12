@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,6 +80,7 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
     MaterialBetterSpinner pax;
     Utils utils;
     long restauId;
+    RelativeLayout lay;
     private SliderLayout mDemoSlider;
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -128,6 +130,8 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
         View view = inflater.inflate(R.layout.fragment_restaurants, container, false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         mDemoSlider = (SliderLayout) view.findViewById(R.id.slider);
+        lay = (RelativeLayout) view.findViewById(R.id.lay);
+
         msgEmpty = (TextView) view.findViewById(R.id.emptyMsg);
         msgEmpty.setVisibility(View.GONE);
 
@@ -625,10 +629,12 @@ public class RestaurantsFragment extends Fragment implements BaseSliderView.OnSl
                     mRecyclerView.setAdapter(mAdapter);
                 } else {
                     msgEmpty.setVisibility(View.VISIBLE);
+                    lay.setVisibility(View.GONE);
                 }
             } else {
                 dialog.dismiss();
-                ShowDialogMaterial(false);
+                msgEmpty.setVisibility(View.VISIBLE);
+                lay.setVisibility(View.GONE);
             }
         }
 
