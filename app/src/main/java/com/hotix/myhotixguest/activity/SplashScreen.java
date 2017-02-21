@@ -43,8 +43,8 @@ public class SplashScreen extends AppCompatActivity {
         logo = (ImageView) findViewById(R.id.logoSplash);
         fadeIn = AnimationUtils.loadAnimation(this, R.anim.anim_fade_in);
         logo.setVisibility(View.VISIBLE);
-        UserInfoModel.getInstance().setURL("http://41.228.14.111/HNGAPI/api/myhotixguest/");
-        UserInfoModel.getInstance().setSERVER("http://41.228.14.111");
+        UserInfoModel.getInstance().setURL("http://192.168.0.196/HNGAPI/api/myhotixguest/");
+        UserInfoModel.getInstance().setSERVER("http://192.168.0.196");
         checker = new UpdateChecker(this, false);
         if (!CheckVersionApp()) {
             android.support.v7.app.AlertDialog.Builder alertDialogBuilder2 = new android.support.v7.app.AlertDialog.Builder(this);

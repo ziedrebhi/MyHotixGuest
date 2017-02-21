@@ -4,8 +4,10 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,11 +15,19 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
 import com.hotix.myhotixguest.R;
+import com.hotix.myhotixguest.entities.DataReservationModel;
+import com.hotix.myhotixguest.entities.UserInfoModel;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
+
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Calendar;
 
@@ -38,6 +48,9 @@ public class ReservationFragment extends Fragment {
     private static final String FRAG_TAG_DATE_PICKER2 = "fragment_date_picker_name2";
     EditText dateArr, dateDep;
     MaterialBetterSpinner chambres, adultes, enfants, arrang, typeChb;
+    MaterialDialog.Builder msgConnecting;
+    MaterialDialog dialog;
+    TextView msgEmpty;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -83,7 +96,7 @@ public class ReservationFragment extends Fragment {
 
         dateArr = (EditText) view.findViewById(R.id.dateArr);
         dateDep = (EditText) view.findViewById(R.id.dateDep);
-
+        ShowDialogMaterial(true);
         dateArr.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -221,6 +234,53 @@ public class ReservationFragment extends Fragment {
         return false;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (isConnected())
+            new HttpRequestTask().execute();
+        else {
+            ShowDialogMaterialConnection();
+        }
+    }
+
+    public void ShowDialogMaterialConnection() {
+        MaterialDialog.Builder msgConnecting = new MaterialDialog.Builder(getActivity());
+
+        msgConnecting.content(getResources().getString(R.string.laoding_error))
+
+                .theme(Theme.LIGHT)
+                .positiveText(getResources().getString(R.string.ressayer));
+        MaterialDialog dialog = msgConnecting.build();
+        dialog.show();
+
+    }
+
+    public void ShowDialogMaterial(boolean isOk) {
+        msgConnecting = new MaterialDialog.Builder(getActivity());
+        if (isOk) {
+            msgConnecting.content(getResources().getString(R.string.laoding))
+                    .progress(true, 0)
+                    .cancelable(false)
+
+                    .theme(Theme.LIGHT)
+                    .progressIndeterminateStyle(false)
+                    .autoDismiss(false);
+            dialog = msgConnecting.build();
+        } else {
+            msgConnecting.content(getResources().getString(R.string.laoding_error))
+
+                    .theme(Theme.LIGHT)
+                    .positiveText(getResources().getString(R.string.ressayer));
+            dialog = msgConnecting.build();
+            dialog.show();
+        }
+    }
+
+    public String getURL() {
+        return UserInfoModel.getInstance().getURL() + "GetDataReservation";
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -231,8 +291,59 @@ public class ReservationFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    private class HttpRequestTask extends AsyncTask<Void, Void, DataReservationModel> {
+        DataReservationModel isConnected = null;
+
+        @Override
+        protected DataReservationModel doInBackground(Void... params) {
+            try {
+                final String url = getURL();
+
+                Log.i("HttpRequestTask", url.toString());
+                RestTemplate restTemplate = new RestTemplate();
+                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+                isConnected = restTemplate.getForObject(url, DataReservationModel.class);
+                Log.i("HttpRequestTask", isConnected.toString());
+                return isConnected;
+            } catch (Exception e) {
+                Log.e("ReservationFragment", e.getMessage(), e);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(DataReservationModel greeting1) {
+            if (isConnected.isStatus()) {
+                dialog.dismiss();
+                if (isConnected.getData().getContrat() == null) {
+                    //  msgEmpty.setVisibility(View.VISIBLE);
+                    Log.i("HttpTask", "No Data");
+                } else {
+                    //mAdapter = new ReclamationsViewAdapter(getDataSet(isConnected), getActivity());
+                    //mRecyclerView.setAdapter(mAdapter);
+                    // msgEmpty.setVisibility(View.GONE);
+                    Log.i("HttpTask", isConnected.getData().toString());
+                }
+            } else {
+                dialog.dismiss();
+                ShowDialogMaterial(false);
+            }
+            ShowDialogMaterial(true);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog.show();
+        }
+
+    }
+
 }
