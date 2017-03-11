@@ -22,14 +22,21 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.codetroopers.betterpickers.calendardatepicker.CalendarDatePickerDialogFragment;
 import com.hotix.myhotixguest.R;
+import com.hotix.myhotixguest.entities.Arrangement;
 import com.hotix.myhotixguest.entities.DataReservationModel;
+import com.hotix.myhotixguest.entities.Tarif;
+import com.hotix.myhotixguest.entities.TypeProduit;
 import com.hotix.myhotixguest.entities.UserInfoModel;
+import com.hotix.myhotixguest.updater.SpinTarifAdapter;
 import com.weiwangcn.betterspinner.library.material.MaterialBetterSpinner;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,10 +58,14 @@ public class ReservationFragment extends Fragment {
     MaterialDialog.Builder msgConnecting;
     MaterialDialog dialog;
     TextView msgEmpty;
+    Hashtable listTarif = new Hashtable();
+    Hashtable listTypeProduit = new Hashtable();
+    Hashtable listArrangement = new Hashtable();
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private OnFragmentInteractionListener mListener;
+    private SpinTarifAdapter adapterTarif;
 
     public ReservationFragment() {
         // Required empty public constructor
@@ -144,39 +155,26 @@ public class ReservationFragment extends Fragment {
             }
         });
 
-        String[] SPINNERLIST = {"1 element", "2 elements", "3 elements", "4 elements"};
-
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_dropdown_item_1line, GetListChambres());
-
-        ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_dropdown_item_1line, GetListAdultes());
-
-        ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_dropdown_item_1line, GetListEnfants());
 
         chambres = (MaterialBetterSpinner) view.
                 findViewById(R.id.chambre);
-        chambres.setAdapter(arrayAdapter);
+
         adultes = (MaterialBetterSpinner) view.
                 findViewById(R.id.adulte);
-        adultes.setAdapter(arrayAdapter1);
+
         enfants = (MaterialBetterSpinner) view.
                 findViewById(R.id.enfant);
-        enfants.setAdapter(arrayAdapter2);
-
 
         typeChb = (MaterialBetterSpinner) view.
                 findViewById(R.id.typechb);
-        typeChb.setAdapter(arrayAdapter);
+
         arrang = (MaterialBetterSpinner) view.
                 findViewById(R.id.arrang);
-        arrang.setAdapter(arrayAdapter);
 
 
         enfants.setFloatingLabelText("N° Enfants ");
         adultes.setFloatingLabelText("N° Adultes ");
-        chambres.setFloatingLabelText("N° Chambres ");
+        chambres.setFloatingLabelText("Tarif");
 
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -323,12 +321,59 @@ public class ReservationFragment extends Fragment {
             if (isConnected.isStatus()) {
                 dialog.dismiss();
                 if (isConnected.getData().getContrat() == null) {
-                    //  msgEmpty.setVisibility(View.VISIBLE);
                     Log.i("HttpTask", "No Data");
                 } else {
-                    //mAdapter = new ReclamationsViewAdapter(getDataSet(isConnected), getActivity());
-                    //mRecyclerView.setAdapter(mAdapter);
-                    // msgEmpty.setVisibility(View.GONE);
+
+                    // Put data into hashtable
+                    List<Arrangement> arr = isConnected.getData().getArrangements();
+                    for (Arrangement arg :
+                            arr) {
+                        listArrangement.put(arg.getName(), arg.getId());
+                    }
+                    List<Tarif> tar = isConnected.getData().getTarifs();
+                    for (Tarif arg :
+                            tar) {
+                        listTarif.put(arg.getName(), arg.getId());
+                    }
+                    List<TypeProduit> tprod = isConnected.getData().getTypeProduits();
+                    for (TypeProduit arg :
+                            tprod) {
+                        listTypeProduit.put(arg.getName(), arg.getId());
+                    }
+
+                    // set Tables Data
+                    String[] arrTarif = Arrays.copyOf(listTarif.keySet().toArray(), listTarif.keySet().toArray().length
+                            , String[].class);
+
+                    String[] arrArrange = Arrays.copyOf(listArrangement.keySet().toArray(), listArrangement.keySet().toArray().length
+                            , String[].class);
+
+                    String[] arrTypeProduit = Arrays.copyOf(listTypeProduit.keySet().toArray(), listTypeProduit.keySet().toArray().length
+                            , String[].class);
+
+
+                    // initiate Adapter
+                    ArrayAdapter<String> arrayAdapterArrang = new ArrayAdapter<String>(getActivity(),
+                            android.R.layout.simple_dropdown_item_1line, arrArrange);
+                    ArrayAdapter<String> arrayAdapterTARIF = new ArrayAdapter<String>(getActivity(),
+                            android.R.layout.simple_dropdown_item_1line, arrTarif);
+                    ArrayAdapter<String> arrayAdapterTypeProd = new ArrayAdapter<String>(getActivity(),
+                            android.R.layout.simple_dropdown_item_1line, arrTypeProduit);
+
+                    ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getActivity(),
+                            android.R.layout.simple_dropdown_item_1line, GetListAdultes());
+                    ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(getActivity(),
+                            android.R.layout.simple_dropdown_item_1line, GetListEnfants());
+
+                    // set Adapter
+                    arrang.setAdapter(arrayAdapterArrang);
+                    chambres.setAdapter(arrayAdapterTARIF);
+                    typeChb.setAdapter(arrayAdapterTypeProd);
+
+                    adultes.setAdapter(arrayAdapter1);
+                    enfants.setAdapter(arrayAdapter2);
+
+
                     Log.i("HttpTask", isConnected.getData().toString());
                 }
             } else {

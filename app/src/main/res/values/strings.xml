@@ -126,5 +126,6 @@
     <string name="nbr_pax">Nbr de Personnes :</string>
     <string name="date_arr">Date :</string>
     <string name="heure_arr">Heure  :</string>
+    <string name="tarif">Tarif </string>
     <string name="resa_rest">Réservation restaurant :</string>
 </resources>
